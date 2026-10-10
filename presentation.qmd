@@ -1,12 +1,12 @@
 ---
 title: "APIs for Economic Data"
-subtitle: "Guest Lecture 2025"
+subtitle: "Guest Lecture 2026"
 author: "Minna Heim"
 # aurel: added the most important :-)
 format:
   revealjs:
     slide-number: true
-    logo: img/rseed-pos.png
+  #  logo: img/rseed-pos.png
 ---
 
 ## Intro {visibility="hidden"}
@@ -25,16 +25,16 @@ This is the KOF Economic Barometer, it's an economic index - monitoring the swis
 the kof baro, consists of 100s if not thousands of indivdual time series
 Let's pretend, we want to reconstruct our own economic index  -->
 
-
-<!-- TODO: use swiss baro, not global -->
 ```{r kofdata, echo=FALSE, message=FALSE, warning=FALSE, results='hide', fig.keep='all'}
 suppressPackageStartupMessages(library(kofdata))
-library(kofdata)
+# devtools::install_github("opentsi/opentimeseries")
+library(opentimeseries)
 
-data <- get_time_series("kofbarometer")
+baro <- read_open_ts(series = "idx", remote_archive = "opentsi/ch.kof.barometer")
+baro_start <- as.integer(format(min(baro$date), c("%Y", "%m")))
 
 plot <- stats::ts.plot(
-  data$kofbarometer,
+  ts(baro$value, start = baro_start, frequency = 12),
   gpars = list(
     xlab = "Year",
     ylab = "Value",
@@ -46,13 +46,14 @@ plot
 
 ## About me 
 
-- I took this course 4 years ago!
+- I took this course 5 years ago!
 - Doing a Master in Data Science & minor in Economics at UZH
-- Working at KOF-ETH
+- Worked at KOF-ETH
 
-<!-- Speaker Notes: I work in the institute that produces the data i just showed you -->
+<!-- TODO: disclaimer, views are mine, not SNBs -->
+<!-- Speaker Notes: I used to work in the institute that produces the data i just showed you -->
 
-## About the institute and our work
+## About the institute and its work
 
 :::: {.columns}
 ::: {.column width="40%"}
@@ -66,7 +67,14 @@ plot
 - software, infrastructure and data publications with economic use cases.
 - teaching PhD students to work with data & open source ecosystem. 
 :::
-::::
+:::: 
+
+## One of my projects: Opentsi
+<!-- TODO: reveal here? -->
+- vintages made public for research purposes, automatically maintained 
+- plenty of API usage (for economic purposes) 
+- so perfect for this lecture 
+- will be used in this lecture...
 
 ## What will you know by the end of this lecture?
 - gain a better understanding of how APIs are used
@@ -79,23 +87,24 @@ Speaker Notes:
 
 Brainstorming session: what kind of variables could be relevant for our economic index?
 
-- what kind of data do you need to construct your own index that best represents Swiss Economic Activity
+- what kind of data do you need to construct your own index that best represents Swiss Economic Activity?
 - you need: gdp, energy consumption, demographic information, swiss market index (smi), etc. 
 - how would you get all of this data?
 -->
 # Naive Way
 
 ## 
-![](img/google_datasets.png){fig-align="center"}
+<!-- instead of BIP, use unemployment... -->
+![](img/google.png){fig-align="center"}
 
 ## 
-![](img/wirtschaftsdaten.png){fig-align="center"}
+![](img/kof-website.png){fig-align="center"}
 
 ## 
-![](img/search.png){fig-align="center"}
+![](img/download.png){fig-align="center"}
 
 ## 
-![](img/downloaded.png){fig-align="center"}
+![](img/excel-trsm.png){fig-align="center"}
 <!-- Speaker Notes: it looks like this (wide format) because its nice to look at & humanly readable
 long: machine friendly,  R plotting packages in prefer long
 
@@ -113,29 +122,19 @@ now that we have downloaded the data, we need to import and clean it, so we can 
 ### Code {.smaller}
 ```r 
 library(readxl)
-library(magrittr)
 library(tidyr)
 
-data <- read_xlsx("examples/je-d-04.02.01.03.xlsx") 
+trsm <- read_xlsx("examples/kof_ch.kof.trsm.fcst.year_ts_2026-10-10_17_41_56.xlsx") 
 
-# subset only the rows 3 (= year) and 9 (= gdp)
-gdp <- data[9,]
-names(gdp) <- data[3,]
+# subset only the column that includes the series we want
+total <- trsm[, c("date", "ch.kof.trsm.fcst.ty.l.all.ch.lg")]
+names(total) <- c("Date", "Overnight_Stays") # rename cols
 
-# pivot data longer (from excel wide format to data frame long format)
-gdp_long <- gdp %>%
-  pivot_longer(cols = everything(), names_to = "Year", values_to = "GDP")
+# convert overnight stays to num and date to date
+total$Overnight_Stays <- as.numeric(total$Overnight_Stays)
+total$Date <- as.Date(total$Date)
 
-# remove old headers (before pivot these used to be the first two columns)
-gdp_long <- gdp_long[-c(1:2),]
-# check structure
-# str(gdp_long)
-
-# convert to gdp num and year to int
-gdp_long$GDP <- as.numeric(gdp_long$GDP)
-gdp_long$Year <- as.integer(gdp_long$Year)
-
-head(gdp_long, n=10)
+head(total, n = 10)
 ```
 
 ### Data
@@ -149,50 +148,28 @@ long: values are vertically oriented
 
  -->
 ```{r import data}
-#### import gdp data manually
 library(readxl)
-library(magrittr)
 library(tidyr)
 
-data <- read_xlsx("examples/je-d-04.02.01.03.xlsx") 
+trsm <- read_xlsx("examples/kof_ch.kof.trsm.fcst.year_ts_2026-10-10_17_41_56.xlsx")
 
-# inspect data
-# head(data)
-# View(data)
+# subset only the column that includes the series we want
+total <- trsm[, c("date", "ch.kof.trsm.fcst.ty.l.all.ch.lg")]
+names(total) <- c("Date", "Overnight_Stays") # rename cols
 
-# subset only the rows 3 (= year) and 9 (= gdp)
-gdp <- data[9,]
-names(gdp) <- data[3,]
+# convert overnight stays to num and date to date
+total$Overnight_Stays <- as.numeric(total$Overnight_Stays)
+total$Date <- as.Date(total$Date)
 
-# pivot data longer (from excel wide format to data frame long format)
-gdp_long <- gdp %>%
-  pivot_longer(
-    cols = everything(),
-    names_to = "Year",
-    values_to = "GDP"
-  )
-
-# remove old headers 
-gdp_long <- gdp_long[-c(1:2),]
-
-# check structure
-# str(gdp_long)
-
-# convert to gdp numeric and year to year
-gdp_long$GDP <- as.numeric(gdp_long$GDP)
-gdp_long$Year <- as.integer(gdp_long$Year)
-
-head(gdp_long, n=10)
-
+head(total, n = 10)
 ```
 
 :::
 
 # API (wrapper) way
 
-
 <!-- Speaker Notes: 
-- getting gdp data from above was hard because we weren't sure where to find what, and how it was gonna look (=which format) 
+- getting unemployment data from above was hard because we weren't sure where to find what, and how it was gonna look (=which format) 
 
 Using APIs, means everything is standardised - because of the HTTP protocol
 
@@ -268,131 +245,123 @@ this is the most frequent way which you will encounter APIs, wrapped
 ![](/img/api_wrapper.png){fig-align="center"}
 
 
-## Use the BFS API Wrapper for R {.smaller}
+## opentsi API Wrapper for R {.smaller}
 <!-- 
 Speaker Notes:
-important here: after line 6, we're done with all the API stuff, all the searching for and getting data (what took us so long before)
+next ingredient for our index: tourism demand (overnight stays in Switzerland, incl. the KOF forecast)
 
-the rest: line 8-21 is just filtering, and inspecting
+important here: after the read_open_ts() call, we're done with all the API stuff, all the searching for and getting data (what took us so long before)
 
+no downloading, no excel, no cleaning - the data already comes in long format
 -->
 ::: {.panel-tabset}
 
 ### code 
 ```r
-# devtools::install_github("lgnbhl/BFS")
-library(BFS)
+# devtools::install_github("opentsi/opentimeseries")
+library(opentimeseries)
 
-# to inspect functions, use ?function, e.g. 
-?bfs_get_catalog_data
+# to inspect function
+?read_open_ts
 
-bfs_get_catalog_data(language = "en", title = "energy")
-dataset_nr <- "px-x-0204000000_106"
-energy_df <- bfs_get_data(dataset_nr, lang = "en")
+# to check which series you could use
 
-# filter only total energy accounts
-total_energy <- subset(
-  energy_df,
-  # filter for totals for each of the columns 
-  `Economy and households` == "Economy and households - Total" &
-  `Energy product` == "Energy product - Total",
-  # select only the two relevant columns
-  select = c(Year, `Energy accounts of economy and households`)
+# overnight stays in Switzerland (in thousands), incl. KOF forecast
+tourism <- read_open_ts(
+  # l = level, all = from all destinations, ch = overnight stays in all of switzerland, lg = logiernächte 
+  series = "l.all.ch.lg",  
+  remote_archive = "opentsi/ch.kof.trsm.fcst.ty"
 )
 
-names(total_energy)[2] <- "Amount"
-
-# View(total_energy)
-head(total_energy, n=10)
+tail(tourism, n = 10)
 ```
 
-### output 1
-
-```{r catalog data}
-library(BFS)
-print(bfs_get_catalog_data(language = "en", title = "energy"))
-```
-
-### output 2
-```{r bfs api wrapper}
-# devtools::install_github("lgnbhl/BFS")
-library(BFS)
-
-# bfs_get_catalog_data(language = "en", title = "energy")
-dataset_nr <- "px-x-0204000000_106"
-energy_df <- bfs_get_data(dataset_nr, lang = "en")
-head(energy_df)
-```
-
-### output 3
-```{r bfs api wrapper tidyverse}
-# devtools::install_github("lgnbhl/BFS")
-library(BFS)
-
-# bfs_get_catalog_data(language = "en", title = "energy")
-dataset_nr <- "px-x-0204000000_106"
-energy_df <- bfs_get_data(dataset_nr, lang = "en")
-
-# filter only total energy accounts
-total_energy <- subset(
-  energy_df,
-  # filter for totals for each of the columns 
-  `Economy and households` == "Economy and households - Total" &
-  `Energy product` == "Energy product - Total",
-  # select only the two relevant columns
-  select = c(Year, `Energy accounts of economy and households`)
+### output 
+```{r opentsi api wrapper}
+tourism <- read_open_ts(
+  series = "l.all.ch.lg",
+  remote_archive = "opentsi/ch.kof.trsm.fcst.ty"
 )
 
-names(total_energy)[2] <- "Amount"
+tail(tourism, n = 10)
+```
 
-# View(total_energy)
-head(total_energy, n=10)
+### plot
+```{r opentsi api wrapper plot}
+plot(
+  tourism$date, tourism$value,
+  type = "l",
+  xlab = "Year",
+  ylab = "Overnight stays (in thousands)",
+  main = "Overnight Stays in Switzerland"
+)
 ```
 
 :::
 
-# BFS API - under the hood
+# opentsi - under the hood {.smaller}
 <!-- Speaker Notes:
-one way in which we know how the BFS API works, 
-other than just going to the BFS API website, is to check out the github repository where the api wrapper is written - we see the functions we previously used in action
+where does the data in the opentsi archive come from?
+every opentsi dataset is a github repository, and a robot (github action) regularly asks the original data provider for new data
+one way in which we know how this works is to check out the github repository of the dataset: github.com/opentsi/ch.kof.trsm.fcst.ty
 -->
-
-##
-<!-- 
-Speaker Notes:
-  looks complicated, let's look at it more closely -->
-![](img/bfs_get_data.png){fig-align="center"}
 
 ## Let's take a closer look {.smaller}
 
 <!-- Speaker Notes:
-  let's go through this like by line: 
-  we have the base url, the endpoints (no params here?)
+  let's go through this line by line: 
+  we have the base url, the endpoint, the query params
   then perform, and specify how to get the response
 
-
-  Important: this function uses httr2 to only get the structure & metadata of the function, not the actual panel data, this is done using pxWeb API (wrapper)...
+  encourage students to open the link in the browser tab themselves
  -->
 ::: {.panel-tabset}
 
 ### Function
 
 ```r
-bfs_get_data <- function(number_bfs, language = "de", query = NULL, column_name_type = "text", variable_value_type = "text", clean_names = FALSE, delay = NULL) {
-  # base url
-  df_json <- httr2::request("https://www.pxweb.bfs.admin.ch/api/v1") %>%
-    # add endpoints
-    httr2::req_url_path_append(paste0(language, "/", number_bfs, "/", number_bfs, ".px")) %>%
-    httr2::req_retry(max_tries = 2, max_seconds = 10) %>%
-    # executre request
-    httr2::req_perform() %>%
-    # transform response to json
-    httr2::resp_body_json(simplifyVector = TRUE)
-
+# github.com/opentsi/ch.kof.trsm.fcst.ty/blob/main/R/process_data.R
+fetch_ts <- function(ts_keys, valid_on = Sys.Date()) {
+  request("https://tsdb-api.kof.ethz.ch/v2") |>   
+    req_url_path_append("ts") |>                  
+    req_url_query(                                
+      keys = paste(ts_keys, collapse = ","),
+      valid_on = as.character(valid_on),
+      access_type = "public"
+    ) |>
+    req_perform() |>                              
+    resp_body_json()                              
 ```
-### Browser Output
+### Browser Output 
 
-![](img/browser.png)
+Try it out in your Browser:
+
+[https://tsdb-api.kof.ethz.ch/v2/ts?keys=ch.kof.trsm.fcst.ty.l.all.ch.lg&access_type=public](https://tsdb-api.kof.ethz.ch/v2/ts?keys=ch.kof.trsm.fcst.ty.l.all.ch.lg&access_type=public)
+
+
+### R Output
+
+```{r fetch ts}
+library(httr2)
+
+fetch_ts <- function(ts_keys, valid_on = Sys.Date()) {
+  request("https://tsdb-api.kof.ethz.ch/v2") |>
+    req_url_path_append("ts") |>
+    req_url_query(
+      keys = paste(ts_keys, collapse = ","),
+      valid_on = as.character(valid_on),
+      access_type = "public"
+    ) |>
+    req_perform() |>
+    resp_body_json()
+}
+
+str(fetch_ts("ch.kof.trsm.fcst.ty.l.all.ch.lg"), list.len = 5)
+```
+
+### Browser Output 2
+
+![In case the prev. Browser Output doesn't work](/img/trsm-browser.png){fig-align="center"}
 
 :::
 
@@ -437,22 +406,30 @@ these are the most important functions in httr2, and how they translate to the d
 
 
 
-## COVID 19 API
-- building our Economic Index
-- for the time during and post covid
-- for this, get vaccination and COVID 19 case rates (incl. death & recovery)
+## Exchange Rate API
 
-## 
-![](/img/swagger_overview.png){fig-align="center"}
+- exchange Rate for tourism, exports 
+- get daily CHF/EUR exchange rate 
+<!-- - building our Economic Index
+- Switzerland is a small, open economy - the value of the Swiss franc matters for exports and tourism
+- for this, get the EUR/CHF exchange rate (daily reference rates of the European Central Bank) -->
 
-## 
-![](/img/historical_endpoint.png){fig-align="center"}
+## Read the API documentation {.smaller}
+<!-- Speaker Notes:
+this is a Swagger UI, a very common way of documenting APIs - you will see this a lot
+show: the endpoints, open /latest, click "Try it out" (fields are locked before), for symbols click "Add item" and enter CHF, then "Execute"
+-->
+<!-- TODO: add screenshots of the Swagger UI (overview, /latest endpoint, try it out), replacing img/swagger_overview.png, img/historical_endpoint.png, img/try_out_endpoint.png -->
 
-##
-![](/img/try_out_endpoint.png){fig-align="center"}
+- API: [https://api.frankfurter.dev/v1](https://api.frankfurter.dev/v1/latest)
+- documentation: [https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json](https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json)
+- to try out an endpoint in the documentation:
+  1. open the endpoint and click **Try it out**
+  2. for `symbols`, click **Add item** and enter `CHF`
+  3. click **Execute**
 
 
-## GET COVID Case Counts {.smaller}
+## GET the latest Exchange Rate {.smaller}
 
 ::: {.panel-tabset}
 
@@ -460,14 +437,13 @@ these are the most important functions in httr2, and how they translate to the d
 ```r
 library(httr2)
 # library(magrittr)
-get_case_counts <- function(country = "CH", period = "all"){
-  base_url <- "https://disease.sh/v3/covid-19/historical"
-  final_url <- paste0(base_url, "/", country, "?lastdays=", period)
+get_latest_rate <- function(base = "EUR", symbols = "CHF"){
+  base_url <- "https://api.frankfurter.dev/v1/latest"
+  final_url <- paste0(base_url, "?base=", base, "&symbols=", symbols)
 
   # alternative - using magrittr pipe
   # req <- request(base_url) %>%
-  #   req_url_path_append(country) %>%
-  #   req_url_query(period = period)
+  #   req_url_query(base = base, symbols = symbols)
 
   # perform API call with httr2
   req <- request(final_url) 
@@ -482,46 +458,44 @@ get_case_counts <- function(country = "CH", period = "all"){
   }
 }
 
-get_case_counts("CH", 5)
+get_latest_rate("EUR", "CHF")
 ```
 ### Data 
-<!-- TODO: determine how to do the period thing, 5 works, but isn't specified here -->
-```{r covid wrapper}
+```{r exchange rate wrapper}
 library(httr2)
 
-get_case_counts <- function(country = "CH", period = "all"){
-  # "https://disease.sh/v3/covid-19/historical/CH?lastdays=30"
-  # this way is error prone, try to match.args to check if the inputs are correct
-  base_url <- "https://disease.sh/v3/covid-19/historical"
-  final_url <- paste0(base_url, "/", country, "?lastdays=", period)
+get_latest_rate <- function(base = "EUR", symbols = "CHF") {
+  # "https://api.frankfurter.dev/v1/latest?base=EUR&symbols=CHF"
+  base_url <- "https://api.frankfurter.dev/v1/latest"
+  final_url <- paste0(base_url, "?base=", base, "&symbols=", symbols)
 
   # perform API call with httr2
   req <- request(final_url)
   resp <- req_perform(req)
 
   # if request is not successful
-  if (resp_status(resp) != 200){
+  if (resp_status(resp) != 200) {
     message("The request was not successful")
-  }
-  else{
+  } else {
     return(resp_body_json(resp))
   }
 }
 
-get_case_counts("CH", 5)
+get_latest_rate("EUR", "CHF")
 ```
 
 :::
 
 
 ## Exercise Description {.smaller}
-- use the API documentation: [https://disease.sh/docs/](https://disease.sh/docs/)
-- use the template to write a function **to get vaccination rates for a country**
+- use the API documentation: [https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json](https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json)
+- use the template to write a function **to get the exchange rate on a past date**
+- **How many Swiss francs did one euro cost on 31 December 2025?**
 
 ```r
 library(httr2)
 
-get_country_vaccine_rates <- function(country = "CH", period = "all"){
+get_rate_on <- function(date, base = "EUR", symbols = "CHF"){
 
   base_url <- "..."
   final_url <- "..."
@@ -539,12 +513,12 @@ get_country_vaccine_rates <- function(country = "CH", period = "all"){
   }
 }
 ```
-- copy this template at: [https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html](https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html)
-
+- copy this template at: [https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html#/exercise-description](https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html#/exercise-description)
+<!-- TODO: add the specific slide here  -->
 
 # Sample Solution
 
-## GET Vaccine Rates {.smaller}
+## GET the Exchange Rate on a past Date {.smaller}
 
 ::: {.panel-tabset}
 
@@ -553,10 +527,10 @@ get_country_vaccine_rates <- function(country = "CH", period = "all"){
 ```r
 library(httr2)
 
-get_country_vaccine_rates <- function(country = "CH", period =  "all"){
-  # https://disease.sh/v3/covid-19/vaccine/coverage/countries/CH?lastdays=30&fullData=false
-  base_url <- "https://disease.sh/v3/covid-19/vaccine/coverage/countries"
-  final_url <- paste0(base_url, "/", country, "?lastdays=", period, "&fullData=false")
+get_rate_on <- function(date, base = "EUR", symbols = "CHF"){
+  # https://api.frankfurter.dev/v1/2025-12-31?base=EUR&symbols=CHF
+  base_url <- "https://api.frankfurter.dev/v1"
+  final_url <- paste0(base_url, "/", date, "?base=", base, "&symbols=", symbols)
 
   # perform  API call with httr2
   req <- request(final_url) 
@@ -571,7 +545,7 @@ get_country_vaccine_rates <- function(country = "CH", period =  "all"){
   }
 }
 
-get_country_vaccine_rates("CH", 5)
+get_rate_on("2025-12-31")
 ```
 
 ### Code 2
@@ -579,13 +553,13 @@ get_country_vaccine_rates("CH", 5)
 ```r
 library(httr2)
 
-get_country_vaccine_rates <- function(country = "CH", period =  "all"){
-  # https://disease.sh/v3/covid-19/vaccine/coverage/countries/CH?lastdays=30&fullData=false
-  base_url <- "https://disease.sh/v3/covid-19/vaccine/coverage/countries"
-  final_url <- paste0(base_url, "/", country, "?lastdays=", period, "&fullData=false")
+get_rate_on <- function(date, base = "EUR", symbols = "CHF"){
+  # https://api.frankfurter.dev/v1/2025-12-31?base=EUR&symbols=CHF
+  req <- request("https://api.frankfurter.dev/v1") |>  # base url
+    req_url_path_append(date) |>                       # path param
+    req_url_query(base = base, symbols = symbols)      # query params
 
   # perform  API call with httr2
-  req <- request(final_url) 
   resp <- req_perform(req)
 
   # if request is not successful
@@ -597,7 +571,7 @@ get_country_vaccine_rates <- function(country = "CH", period =  "all"){
   }
 }
 
-get_country_vaccine_rates("CH", 5)
+get_rate_on("2025-12-31")
 ```
 
 
@@ -606,31 +580,31 @@ get_country_vaccine_rates("CH", 5)
 ```{r}
 library(httr2)
 
-get_country_vaccine_rates <- function(country = "CH", period = "all"){
-  # https://disease.sh/v3/covid-19/vaccine/coverage/countries/CH?lastdays=30&fullData=false
-  base_url <- "https://disease.sh/v3/covid-19/vaccine/coverage/countries"
-  final_url <- paste0(base_url, "/", country, "?lastdays=", period, "&fullData=false")
+get_rate_on <- function(date, base = "EUR", symbols = "CHF") {
+  # https://api.frankfurter.dev/v1/2025-12-31?base=EUR&symbols=CHF
+  base_url <- "https://api.frankfurter.dev/v1"
+  final_url <- paste0(base_url, "/", date, "?base=", base, "&symbols=", symbols)
 
   # perform  API call with httr2
-  req <- request(final_url) 
+  req <- request(final_url)
   resp <- req_perform(req)
 
   # if request is not successful
-  if (resp_status(resp) != 200){
+  if (resp_status(resp) != 200) {
     message("The request was not successful")
-  }
-  else{
+  } else {
     return(resp_body_json(resp))
   }
 }
 
-get_country_vaccine_rates("CH", 5)
+get_rate_on("2025-12-31")
 ```
 
 ::: 
 
 ## Other examples of APIs & API wrappers for economic data {.smaller}
 
+- the [opentimeseries](https://github.com/opentsi/opentimeseries) R Package (for versioned, open time series)
 - the [kofdata](https://www.rdocumentation.org/packages/kofdata/versions/0.2.1) R Package (for KOF data)
 - the [BFS](https://felixluginbuhl.com/BFS/) R package (for Swiss federal statistics)
 - the [fredapi](https://pypi.org/project/fredapi/) Python Library (for US economic data)
@@ -641,8 +615,7 @@ get_country_vaccine_rates("CH", 5)
 ## Thank you for your attention! {.smaller}
 If you are interested in working with us or if you have any questions: 
 
-- source code: [https://github.com/minnaheim/dh_guest_lecture_2025](https://github.com/minnaheim/dh_guest_lecture_2025)
-- slides: [https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html/](https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html)
-- find us at [rseed.ch](https://rseed.ch)
-- contact me: [heim@kof.ethz.ch](mailto:heim@kof.ethz.ch)
+- source code: [https://github.com/minnaheim/dh_guest_lecture_2026](https://github.com/minnaheim/dh_guest_lecture_2025)
+- slides: [https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html/](https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html)
+- contact me: [minnaemiliahagen.heim@uzh.ch](mailto:minnaemiliahagen.heim@uzh.ch)
 
