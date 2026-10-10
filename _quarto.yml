@@ -3,15 +3,15 @@ project:
   # resources:
   #   - "images/twitter-card.png"
   #   - "data"
-  # render:
-  #   - "*.qmd"
-  #   - "!README.qmd"
+  render:
+    - "*.qmd"
+    - "!blog-api.qmd"
 
 website:
   page-navigation: true
   title: "Guest Lecture Slides 2025"
-  site-url: "https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html"
-  repo-url: https://github.com/minnaheim/dh_guest_lecture_2025
+  site-url: "https://minnaheim.github.io/dh_guest_lecture_2026/"
+  repo-url: https://github.com/minnaheim/dh_guest_lecture_2026
   repo-actions: [edit, issue]
 
   # page-footer:

@@ -690,4 +690,4 @@ I hope you were able to learn something through this blog post, whether that is 
 [^1]: https://kof.ethz.ch/en/forecasts-and-indicators/indicators/kof-economic-barometer.html
 [^2]: https://www.dontusethiscode.com/blog/2024-11-20_pandas_reshaping.html
 [^3]: Try executing the Get Request yourself in your browser: https://www.pxweb.bfs.admin.ch/api/v1/en/px-x-0204000000_106/px-x-0204000000_106.px
-[^4]: If you want to take a look at a sample solution of this task, check out: https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html#/get-vaccine-rates
+[^4]: If you want to take a look at a sample solution of this task, check out: https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/get-vaccine-rates

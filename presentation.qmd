@@ -513,7 +513,7 @@ get_rate_on <- function(date, base = "EUR", symbols = "CHF"){
   }
 }
 ```
-- copy this template at: [https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html#/exercise-description](https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html#/exercise-description)
+- copy this template at: [https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description](https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description)
 <!-- TODO: add the specific slide here  -->
 
 # Sample Solution
@@ -615,7 +615,7 @@ get_rate_on("2025-12-31")
 ## Thank you for your attention! {.smaller}
 If you are interested in working with us or if you have any questions: 
 
-- source code: [https://github.com/minnaheim/dh_guest_lecture_2026](https://github.com/minnaheim/dh_guest_lecture_2025)
-- slides: [https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html/](https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html)
+- source code: [https://github.com/minnaheim/dh_guest_lecture_2026](https://github.com/minnaheim/dh_guest_lecture_2026)
+- slides: [https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html/](https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html)
 - contact me: [minnaemiliahagen.heim@uzh.ch](mailto:minnaemiliahagen.heim@uzh.ch)
 
