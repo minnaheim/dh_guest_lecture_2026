@@ -392,7 +392,7 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">APIs for Economic Data</h1>
-  <p class="subtitle">Guest Lecture 2025</p>
+  <p class="subtitle">Guest Lecture 2026</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -412,20 +412,20 @@ This is the KOF Economic Barometer, it's an economic index - monitoring the swis
 -> how? it's a collection of relevant data that helps capture the swiss economy, synthesised together
 the kof baro, consists of 100s if not thousands of indivdual time series
 Let's pretend, we want to reconstruct our own economic index  -->
-<!-- TODO: use swiss baro, not global -->
 
 <img data-src="presentation_files/figure-revealjs/kofdata-1.png" width="960" class="r-stretch"></section>
 <section id="about-me" class="slide level2">
 <h2>About me</h2>
 <ul>
-<li>I took this course 4 years ago!</li>
+<li>I took this course 5 years ago!</li>
 <li>Doing a Master in Data Science &amp; minor in Economics at UZH</li>
-<li>Working at KOF-ETH</li>
+<li>Worked at KOF-ETH</li>
 </ul>
-<!-- Speaker Notes: I work in the institute that produces the data i just showed you -->
+<!-- TODO: disclaimer, views are mine, not SNBs -->
+<!-- Speaker Notes: I used to work in the institute that produces the data i just showed you -->
 </section>
-<section id="about-the-institute-and-our-work" class="slide level2">
-<h2>About the institute and our work</h2>
+<section id="about-the-institute-and-its-work" class="slide level2">
+<h2>About the institute and its work</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
 <p><img data-src="img/ETH_Fremdmedienlogo_KOF_horizontal_pos.png"> <img data-src="img/rseed-pos.png"> <img data-src="img/h4sci-logo-web.svg" style="width:50.0%"></p>
@@ -437,6 +437,16 @@ Let's pretend, we want to reconstruct our own economic index  -->
 </ul>
 </div>
 </div>
+</section>
+<section id="one-of-my-projects-opentsi" class="slide level2">
+<h2>One of my projects: Opentsi</h2>
+<!-- TODO: reveal here? -->
+<ul>
+<li>vintages made public for research purposes, automatically maintained</li>
+<li>plenty of API usage (for economic purposes)</li>
+<li>so perfect for this lecture</li>
+<li>will be used in this lecture…</li>
+</ul>
 </section>
 <section id="what-will-you-know-by-the-end-of-this-lecture" class="slide level2">
 <h2>What will you know by the end of this lecture?</h2>
@@ -453,7 +463,7 @@ Speaker Notes:
 
 Brainstorming session: what kind of variables could be relevant for our economic index?
 
-- what kind of data do you need to construct your own index that best represents Swiss Economic Activity
+- what kind of data do you need to construct your own index that best represents Swiss Economic Activity?
 - you need: gdp, energy consumption, demographic information, swiss market index (smi), etc. 
 - how would you get all of this data?
 -->
@@ -466,19 +476,20 @@ Brainstorming session: what kind of variables could be relevant for our economic
 </section>
 <section id="section" class="slide level2">
 <h2></h2>
+<!-- instead of BIP, use unemployment... -->
 
-<img data-src="img/google_datasets.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<img data-src="img/google.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="section-1" class="slide level2">
 <h2></h2>
 
-<img data-src="img/wirtschaftsdaten.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<img data-src="img/kof-website.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="section-2" class="slide level2">
 <h2></h2>
 
-<img data-src="img/search.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<img data-src="img/download.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="section-3" class="slide level2">
 <h2></h2>
-<p><img data-src="img/downloaded.png" class="quarto-figure quarto-figure-center"> <!-- Speaker Notes: it looks like this (wide format) because its nice to look at & humanly readable
+<p><img data-src="img/excel-trsm.png" class="quarto-figure quarto-figure-center"> <!-- Speaker Notes: it looks like this (wide format) because its nice to look at & humanly readable
 long: machine friendly,  R plotting packages in prefer long
 
 Here: I have to say that this is a "friendly example", not all data is excel, but px format - a format that many data providers prefer.
@@ -495,29 +506,19 @@ now that we have downloaded the data, we need to import and clean it, so we can 
 <div class="tab-content">
 <div id="tabset-1-1">
 <div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(readxl)</span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(magrittr)</span>
-<span id="cb1-3"><a></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb1-4"><a></a></span>
-<span id="cb1-5"><a></a>data <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"examples/je-d-04.02.01.03.xlsx"</span>) </span>
-<span id="cb1-6"><a></a></span>
-<span id="cb1-7"><a></a><span class="co"># subset only the rows 3 (= year) and 9 (= gdp)</span></span>
-<span id="cb1-8"><a></a>gdp <span class="ot">&lt;-</span> data[<span class="dv">9</span>,]</span>
-<span id="cb1-9"><a></a><span class="fu">names</span>(gdp) <span class="ot">&lt;-</span> data[<span class="dv">3</span>,]</span>
-<span id="cb1-10"><a></a></span>
-<span id="cb1-11"><a></a><span class="co"># pivot data longer (from excel wide format to data frame long format)</span></span>
-<span id="cb1-12"><a></a>gdp_long <span class="ot">&lt;-</span> gdp <span class="sc">%&gt;%</span></span>
-<span id="cb1-13"><a></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"Year"</span>, <span class="at">values_to =</span> <span class="st">"GDP"</span>)</span>
-<span id="cb1-14"><a></a></span>
-<span id="cb1-15"><a></a><span class="co"># remove old headers (before pivot these used to be the first two columns)</span></span>
-<span id="cb1-16"><a></a>gdp_long <span class="ot">&lt;-</span> gdp_long[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>),]</span>
-<span id="cb1-17"><a></a><span class="co"># check structure</span></span>
-<span id="cb1-18"><a></a><span class="co"># str(gdp_long)</span></span>
-<span id="cb1-19"><a></a></span>
-<span id="cb1-20"><a></a><span class="co"># convert to gdp num and year to int</span></span>
-<span id="cb1-21"><a></a>gdp_long<span class="sc">$</span>GDP <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(gdp_long<span class="sc">$</span>GDP)</span>
-<span id="cb1-22"><a></a>gdp_long<span class="sc">$</span>Year <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(gdp_long<span class="sc">$</span>Year)</span>
-<span id="cb1-23"><a></a></span>
-<span id="cb1-24"><a></a><span class="fu">head</span>(gdp_long, <span class="at">n=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a>trsm <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"examples/kof_ch.kof.trsm.fcst.year_ts_2026-10-10_17_41_56.xlsx"</span>) </span>
+<span id="cb1-5"><a></a></span>
+<span id="cb1-6"><a></a><span class="co"># subset only the column that includes the series we want</span></span>
+<span id="cb1-7"><a></a>total <span class="ot">&lt;-</span> trsm[, <span class="fu">c</span>(<span class="st">"date"</span>, <span class="st">"ch.kof.trsm.fcst.ty.l.all.ch.lg"</span>)]</span>
+<span id="cb1-8"><a></a><span class="fu">names</span>(total) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Date"</span>, <span class="st">"Overnight_Stays"</span>) <span class="co"># rename cols</span></span>
+<span id="cb1-9"><a></a></span>
+<span id="cb1-10"><a></a><span class="co"># convert overnight stays to num and date to date</span></span>
+<span id="cb1-11"><a></a>total<span class="sc">$</span>Overnight_Stays <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(total<span class="sc">$</span>Overnight_Stays)</span>
+<span id="cb1-12"><a></a>total<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(total<span class="sc">$</span>Date)</span>
+<span id="cb1-13"><a></a></span>
+<span id="cb1-14"><a></a><span class="fu">head</span>(total, <span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="tabset-1-2">
 <!-- Speaker Notes:
@@ -531,18 +532,18 @@ long: values are vertically oriented
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 2
-    Year     GDP
-   &lt;int&gt;   &lt;dbl&gt;
- 1  1995 423515.
- 2  1996 426882.
- 3  1997 433747.
- 4  1998 444955.
- 5  1999 453531.
- 6  2000 476794.
- 7  2001 489674.
- 8  2002 489293.
- 9  2003 493652.
-10  2004 508608.</code></pre>
+   Date       Overnight_Stays
+   &lt;date&gt;               &lt;dbl&gt;
+ 1 2006-01-01          34473.
+ 2 2007-01-01          35900.
+ 3 2008-01-01          37335.
+ 4 2009-01-01          35529.
+ 5 2010-01-01          36124.
+ 6 2011-01-01          35591.
+ 7 2012-01-01          34616.
+ 8 2013-01-01          35494.
+ 9 2014-01-01          35816.
+10 2015-01-01          35776.</code></pre>
 </div>
 </div>
 </div>
@@ -553,7 +554,7 @@ long: values are vertically oriented
 <section id="api-wrapper-way" class="title-slide slide level1 center">
 <h1>API (wrapper) way</h1>
 <!-- Speaker Notes: 
-- getting gdp data from above was hard because we weren't sure where to find what, and how it was gonna look (=which format) 
+- getting unemployment data from above was hard because we weren't sure where to find what, and how it was gonna look (=which format) 
 
 Using APIs, means everything is standardised - because of the HTTP protocol
 
@@ -630,86 +631,63 @@ this is the most frequent way which you will encounter APIs, wrapped
  -->
 
 <img data-src="./img/api_wrapper.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="use-the-bfs-api-wrapper-for-r" class="slide level2 smaller">
-<h2>Use the BFS API Wrapper for R</h2>
+<section id="opentsi-api-wrapper-for-r" class="slide level2 smaller">
+<h2>opentsi API Wrapper for R</h2>
 <!-- 
 Speaker Notes:
-important here: after line 6, we're done with all the API stuff, all the searching for and getting data (what took us so long before)
+next ingredient for our index: tourism demand (overnight stays in Switzerland, incl. the KOF forecast)
 
-the rest: line 8-21 is just filtering, and inspecting
+important here: after the read_open_ts() call, we're done with all the API stuff, all the searching for and getting data (what took us so long before)
 
+no downloading, no excel, no cleaning - the data already comes in long format
 -->
 <div class="panel-tabset">
-<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">code</a></li><li><a href="#tabset-2-2">output 1</a></li><li><a href="#tabset-2-3">output 2</a></li><li><a href="#tabset-2-4">output 3</a></li></ul>
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">code</a></li><li><a href="#tabset-2-2">output</a></li><li><a href="#tabset-2-3">plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1">
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># devtools::install_github("lgnbhl/BFS")</span></span>
-<span id="cb3-2"><a></a><span class="fu">library</span>(BFS)</span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># devtools::install_github("opentsi/opentimeseries")</span></span>
+<span id="cb3-2"><a></a><span class="fu">library</span>(opentimeseries)</span>
 <span id="cb3-3"><a></a></span>
-<span id="cb3-4"><a></a><span class="co"># to inspect functions, use ?function, e.g. </span></span>
-<span id="cb3-5"><a></a>?bfs_get_catalog_data</span>
+<span id="cb3-4"><a></a><span class="co"># to inspect function</span></span>
+<span id="cb3-5"><a></a>?read_open_ts</span>
 <span id="cb3-6"><a></a></span>
-<span id="cb3-7"><a></a><span class="fu">bfs_get_catalog_data</span>(<span class="at">language =</span> <span class="st">"en"</span>, <span class="at">title =</span> <span class="st">"energy"</span>)</span>
-<span id="cb3-8"><a></a>dataset_nr <span class="ot">&lt;-</span> <span class="st">"px-x-0204000000_106"</span></span>
-<span id="cb3-9"><a></a>energy_df <span class="ot">&lt;-</span> <span class="fu">bfs_get_data</span>(dataset_nr, <span class="at">lang =</span> <span class="st">"en"</span>)</span>
-<span id="cb3-10"><a></a></span>
-<span id="cb3-11"><a></a><span class="co"># filter only total energy accounts</span></span>
-<span id="cb3-12"><a></a>total_energy <span class="ot">&lt;-</span> <span class="fu">subset</span>(</span>
-<span id="cb3-13"><a></a>  energy_df,</span>
-<span id="cb3-14"><a></a>  <span class="co"># filter for totals for each of the columns </span></span>
-<span id="cb3-15"><a></a>  <span class="st">`</span><span class="at">Economy and households</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Economy and households - Total"</span> <span class="sc">&amp;</span></span>
-<span id="cb3-16"><a></a>  <span class="st">`</span><span class="at">Energy product</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Energy product - Total"</span>,</span>
-<span id="cb3-17"><a></a>  <span class="co"># select only the two relevant columns</span></span>
-<span id="cb3-18"><a></a>  <span class="at">select =</span> <span class="fu">c</span>(Year, <span class="st">`</span><span class="at">Energy accounts of economy and households</span><span class="st">`</span>)</span>
-<span id="cb3-19"><a></a>)</span>
-<span id="cb3-20"><a></a></span>
-<span id="cb3-21"><a></a><span class="fu">names</span>(total_energy)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"Amount"</span></span>
-<span id="cb3-22"><a></a></span>
-<span id="cb3-23"><a></a><span class="co"># View(total_energy)</span></span>
-<span id="cb3-24"><a></a><span class="fu">head</span>(total_energy, <span class="at">n=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-7"><a></a><span class="co"># to check which series you could use</span></span>
+<span id="cb3-8"><a></a></span>
+<span id="cb3-9"><a></a><span class="co"># overnight stays in Switzerland (in thousands), incl. KOF forecast</span></span>
+<span id="cb3-10"><a></a>tourism <span class="ot">&lt;-</span> <span class="fu">read_open_ts</span>(</span>
+<span id="cb3-11"><a></a>  <span class="co"># l = level, all = from all destinations, ch = overnight stays in all of switzerland, lg = logiernächte </span></span>
+<span id="cb3-12"><a></a>  <span class="at">series =</span> <span class="st">"l.all.ch.lg"</span>,  </span>
+<span id="cb3-13"><a></a>  <span class="at">remote_archive =</span> <span class="st">"opentsi/ch.kof.trsm.fcst.ty"</span></span>
+<span id="cb3-14"><a></a>)</span>
+<span id="cb3-15"><a></a></span>
+<span id="cb3-16"><a></a><span class="fu">tail</span>(tourism, <span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="tabset-2-2">
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 6
-  title                 language number_bfs number_asset publication_date url_px
-  &lt;chr&gt;                 &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;        &lt;date&gt;           &lt;chr&gt; 
-1 Energy accounts of e… en       px-x-0204… 36179320     2025-09-30       https…</code></pre>
+<pre><code>             id       date    value
+         &lt;char&gt;     &lt;IDat&gt;    &lt;num&gt;
+ 1: l.all.ch.lg 2018-01-01 38659.21
+ 2: l.all.ch.lg 2019-01-01 39378.58
+ 3: l.all.ch.lg 2020-01-01 26356.71
+ 4: l.all.ch.lg 2021-01-01 27803.61
+ 5: l.all.ch.lg 2022-01-01 37216.82
+ 6: l.all.ch.lg 2023-01-01 41474.44
+ 7: l.all.ch.lg 2024-01-01 42476.00
+ 8: l.all.ch.lg 2025-01-01 43535.38
+ 9: l.all.ch.lg 2026-01-01 43744.53
+10: l.all.ch.lg 2027-01-01 42354.42</code></pre>
 </div>
 </div>
 </div>
 <div id="tabset-2-3">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 5
-  `Unit of measure` `Economy and households`       `Energy product`       Year 
-  &lt;chr&gt;             &lt;chr&gt;                          &lt;chr&gt;                  &lt;chr&gt;
-1 Terajoules        Economy and households - Total Energy product - Total 2000 
-2 Terajoules        Economy and households - Total Energy product - Total 2001 
-3 Terajoules        Economy and households - Total Energy product - Total 2002 
-4 Terajoules        Economy and households - Total Energy product - Total 2003 
-5 Terajoules        Economy and households - Total Energy product - Total 2004 
-6 Terajoules        Economy and households - Total Energy product - Total 2005 
-# ℹ 1 more variable: `Energy accounts of economy and households` &lt;dbl&gt;</code></pre>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/opentsi api wrapper plot-1.png" width="960"></p>
+</figure>
 </div>
-</div>
-</div>
-<div id="tabset-2-4">
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 2
-   Year    Amount
-   &lt;chr&gt;    &lt;dbl&gt;
- 1 2000  1103603.
- 2 2001  1127768.
- 3 2002  1112879.
- 4 2003  1130842.
- 5 2004  1131767.
- 6 2005  1121999.
- 7 2006  1157170.
- 8 2007  1126804.
- 9 2008  1158734.
-10 2009  1136915.</code></pre>
 </div>
 </div>
 </div>
@@ -717,47 +695,75 @@ the rest: line 8-21 is just filtering, and inspecting
 </div>
 </section></section>
 <section>
-<section id="bfs-api---under-the-hood" class="title-slide slide level1 center">
-<h1>BFS API - under the hood</h1>
+<section id="opentsi---under-the-hood" class="title-slide slide level1 smaller center">
+<h1>opentsi - under the hood</h1>
 <!-- Speaker Notes:
-one way in which we know how the BFS API works, 
-other than just going to the BFS API website, is to check out the github repository where the api wrapper is written - we see the functions we previously used in action
+where does the data in the opentsi archive come from?
+every opentsi dataset is a github repository, and a robot (github action) regularly asks the original data provider for new data
+one way in which we know how this works is to check out the github repository of the dataset: github.com/opentsi/ch.kof.trsm.fcst.ty
 -->
 </section>
-<section id="section-10" class="slide level2">
-<h2></h2>
-<!-- 
-Speaker Notes:
-  looks complicated, let's look at it more closely -->
-
-<img data-src="img/bfs_get_data.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="lets-take-a-closer-look" class="slide level2 smaller">
 <h2>Let’s take a closer look</h2>
 <!-- Speaker Notes:
-  let's go through this like by line: 
-  we have the base url, the endpoints (no params here?)
+  let's go through this line by line: 
+  we have the base url, the endpoint, the query params
   then perform, and specify how to get the response
 
-
-  Important: this function uses httr2 to only get the structure & metadata of the function, not the actual panel data, this is done using pxWeb API (wrapper)...
+  encourage students to open the link in the browser tab themselves
  -->
 <div class="panel-tabset">
-<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Function</a></li><li><a href="#tabset-3-2">Browser Output</a></li></ul>
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Function</a></li><li><a href="#tabset-3-2">Browser Output</a></li><li><a href="#tabset-3-3">R Output</a></li><li><a href="#tabset-3-4">Browser Output 2</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1">
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>bfs_get_data <span class="ot">&lt;-</span> <span class="cf">function</span>(number_bfs, <span class="at">language =</span> <span class="st">"de"</span>, <span class="at">query =</span> <span class="cn">NULL</span>, <span class="at">column_name_type =</span> <span class="st">"text"</span>, <span class="at">variable_value_type =</span> <span class="st">"text"</span>, <span class="at">clean_names =</span> <span class="cn">FALSE</span>, <span class="at">delay =</span> <span class="cn">NULL</span>) {</span>
-<span id="cb7-2"><a></a>  <span class="co"># base url</span></span>
-<span id="cb7-3"><a></a>  df_json <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://www.pxweb.bfs.admin.ch/api/v1"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a></a>    <span class="co"># add endpoints</span></span>
-<span id="cb7-5"><a></a>    httr2<span class="sc">::</span><span class="fu">req_url_path_append</span>(<span class="fu">paste0</span>(language, <span class="st">"/"</span>, number_bfs, <span class="st">"/"</span>, number_bfs, <span class="st">".px"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-6"><a></a>    httr2<span class="sc">::</span><span class="fu">req_retry</span>(<span class="at">max_tries =</span> <span class="dv">2</span>, <span class="at">max_seconds =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-7"><a></a>    <span class="co"># executre request</span></span>
-<span id="cb7-8"><a></a>    httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb7-9"><a></a>    <span class="co"># transform response to json</span></span>
-<span id="cb7-10"><a></a>    httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># github.com/opentsi/ch.kof.trsm.fcst.ty/blob/main/R/process_data.R</span></span>
+<span id="cb5-2"><a></a>fetch_ts <span class="ot">&lt;-</span> <span class="cf">function</span>(ts_keys, <span class="at">valid_on =</span> <span class="fu">Sys.Date</span>()) {</span>
+<span id="cb5-3"><a></a>  <span class="fu">request</span>(<span class="st">"https://tsdb-api.kof.ethz.ch/v2"</span>) <span class="sc">|&gt;</span>   </span>
+<span id="cb5-4"><a></a>    <span class="fu">req_url_path_append</span>(<span class="st">"ts"</span>) <span class="sc">|&gt;</span>                  </span>
+<span id="cb5-5"><a></a>    <span class="fu">req_url_query</span>(                                </span>
+<span id="cb5-6"><a></a>      <span class="at">keys =</span> <span class="fu">paste</span>(ts_keys, <span class="at">collapse =</span> <span class="st">","</span>),</span>
+<span id="cb5-7"><a></a>      <span class="at">valid_on =</span> <span class="fu">as.character</span>(valid_on),</span>
+<span id="cb5-8"><a></a>      <span class="at">access_type =</span> <span class="st">"public"</span></span>
+<span id="cb5-9"><a></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb5-10"><a></a>    <span class="fu">req_perform</span>() <span class="sc">|&gt;</span>                              </span>
+<span id="cb5-11"><a></a>    <span class="fu">resp_body_json</span>()                              </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="tabset-3-2">
-<p><img data-src="img/browser.png"></p>
+<p>Try it out in your Browser:</p>
+<p><a href="https://tsdb-api.kof.ethz.ch/v2/ts?keys=ch.kof.trsm.fcst.ty.l.all.ch.lg&amp;access_type=public">https://tsdb-api.kof.ethz.ch/v2/ts?keys=ch.kof.trsm.fcst.ty.l.all.ch.lg&amp;access_type=public</a></p>
+</div>
+<div id="tabset-3-3">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 1
+ $ :List of 5
+  ..$ ts_key      : chr "ch.kof.trsm.fcst.ty.l.all.ch.lg"
+  ..$ vintage_date: chr "2025-11-18"
+  ..$ time        :List of 22
+  .. ..$ : chr "2006-01-01"
+  .. ..$ : chr "2007-01-01"
+  .. ..$ : chr "2008-01-01"
+  .. ..$ : chr "2009-01-01"
+  .. ..$ : chr "2010-01-01"
+  .. .. [list output truncated]
+  ..$ value       :List of 22
+  .. ..$ : num 34473
+  .. ..$ : num 35900
+  .. ..$ : num 37335
+  .. ..$ : num 35529
+  .. ..$ : num 36124
+  .. .. [list output truncated]
+  ..$ frequency   : int 1</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-4">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="./img/trsm-browser.png"></p>
+<figcaption>In case the prev. Browser Output doesn’t work</figcaption>
+</figure>
+</div>
 </div>
 </div>
 </div>
@@ -829,120 +835,79 @@ these are the most important functions in httr2, and how they translate to the d
 </tbody>
 </table>
 </section>
-<section id="covid-19-api" class="slide level2">
-<h2>COVID 19 API</h2>
+<section id="exchange-rate-api" class="slide level2">
+<h2>Exchange Rate API</h2>
 <ul>
-<li>building our Economic Index</li>
-<li>for the time during and post covid</li>
-<li>for this, get vaccination and COVID 19 case rates (incl.&nbsp;death &amp; recovery)</li>
+<li>exchange Rate for tourism, exports</li>
+<li>get daily CHF/EUR exchange rate <!-- - building our Economic Index
+- Switzerland is a small, open economy - the value of the Swiss franc matters for exports and tourism
+- for this, get the EUR/CHF exchange rate (daily reference rates of the European Central Bank) --></li>
 </ul>
 </section>
-<section id="section-11" class="slide level2">
-<h2></h2>
-
-<img data-src="./img/swagger_overview.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-12" class="slide level2">
-<h2></h2>
-
-<img data-src="./img/historical_endpoint.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-13" class="slide level2">
-<h2></h2>
-
-<img data-src="./img/try_out_endpoint.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="get-covid-case-counts" class="slide level2 smaller">
-<h2>GET COVID Case Counts</h2>
+<section id="read-the-api-documentation" class="slide level2 smaller">
+<h2>Read the API documentation</h2>
+<!-- Speaker Notes:
+this is a Swagger UI, a very common way of documenting APIs - you will see this a lot
+show: the endpoints, open /latest, click "Try it out" (fields are locked before), for symbols click "Add item" and enter CHF, then "Execute"
+-->
+<!-- TODO: add screenshots of the Swagger UI (overview, /latest endpoint, try it out), replacing img/swagger_overview.png, img/historical_endpoint.png, img/try_out_endpoint.png -->
+<ul>
+<li>API: <a href="https://api.frankfurter.dev/v1/latest">https://api.frankfurter.dev/v1</a></li>
+<li>documentation: <a href="https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json">https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json</a></li>
+<li>to try out an endpoint in the documentation:
+<ol type="1">
+<li>open the endpoint and click <strong>Try it out</strong></li>
+<li>for <code>symbols</code>, click <strong>Add item</strong> and enter <code>CHF</code></li>
+<li>click <strong>Execute</strong></li>
+</ol></li>
+</ul>
+</section>
+<section id="get-the-latest-exchange-rate" class="slide level2 smaller">
+<h2>GET the latest Exchange Rate</h2>
 <div class="panel-tabset">
 <ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Code</a></li><li><a href="#tabset-4-2">Data</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1">
-<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">library</span>(httr2)</span>
-<span id="cb8-2"><a></a><span class="co"># library(magrittr)</span></span>
-<span id="cb8-3"><a></a>get_case_counts <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">country =</span> <span class="st">"CH"</span>, <span class="at">period =</span> <span class="st">"all"</span>){</span>
-<span id="cb8-4"><a></a>  base_url <span class="ot">&lt;-</span> <span class="st">"https://disease.sh/v3/covid-19/historical"</span></span>
-<span id="cb8-5"><a></a>  final_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url, <span class="st">"/"</span>, country, <span class="st">"?lastdays="</span>, period)</span>
-<span id="cb8-6"><a></a></span>
-<span id="cb8-7"><a></a>  <span class="co"># alternative - using magrittr pipe</span></span>
-<span id="cb8-8"><a></a>  <span class="co"># req &lt;- request(base_url) %&gt;%</span></span>
-<span id="cb8-9"><a></a>  <span class="co">#   req_url_path_append(country) %&gt;%</span></span>
-<span id="cb8-10"><a></a>  <span class="co">#   req_url_query(period = period)</span></span>
-<span id="cb8-11"><a></a></span>
-<span id="cb8-12"><a></a>  <span class="co"># perform API call with httr2</span></span>
-<span id="cb8-13"><a></a>  req <span class="ot">&lt;-</span> <span class="fu">request</span>(final_url) </span>
-<span id="cb8-14"><a></a>  resp <span class="ot">&lt;-</span> <span class="fu">req_perform</span>(req)</span>
-<span id="cb8-15"><a></a></span>
-<span id="cb8-16"><a></a>  <span class="co"># if request is not successful</span></span>
-<span id="cb8-17"><a></a>  <span class="cf">if</span> (<span class="fu">resp_status</span>(resp) <span class="sc">!=</span> <span class="dv">200</span>){</span>
-<span id="cb8-18"><a></a>    <span class="fu">message</span>(<span class="st">"The request was not successful"</span>)</span>
-<span id="cb8-19"><a></a>  }</span>
-<span id="cb8-20"><a></a>  <span class="cf">else</span>{</span>
-<span id="cb8-21"><a></a>    <span class="fu">return</span>(<span class="fu">resp_body_json</span>(resp))</span>
-<span id="cb8-22"><a></a>  }</span>
-<span id="cb8-23"><a></a>}</span>
-<span id="cb8-24"><a></a></span>
-<span id="cb8-25"><a></a><span class="fu">get_case_counts</span>(<span class="st">"CH"</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(httr2)</span>
+<span id="cb7-2"><a></a><span class="co"># library(magrittr)</span></span>
+<span id="cb7-3"><a></a>get_latest_rate <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">base =</span> <span class="st">"EUR"</span>, <span class="at">symbols =</span> <span class="st">"CHF"</span>){</span>
+<span id="cb7-4"><a></a>  base_url <span class="ot">&lt;-</span> <span class="st">"https://api.frankfurter.dev/v1/latest"</span></span>
+<span id="cb7-5"><a></a>  final_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url, <span class="st">"?base="</span>, base, <span class="st">"&amp;symbols="</span>, symbols)</span>
+<span id="cb7-6"><a></a></span>
+<span id="cb7-7"><a></a>  <span class="co"># alternative - using magrittr pipe</span></span>
+<span id="cb7-8"><a></a>  <span class="co"># req &lt;- request(base_url) %&gt;%</span></span>
+<span id="cb7-9"><a></a>  <span class="co">#   req_url_query(base = base, symbols = symbols)</span></span>
+<span id="cb7-10"><a></a></span>
+<span id="cb7-11"><a></a>  <span class="co"># perform API call with httr2</span></span>
+<span id="cb7-12"><a></a>  req <span class="ot">&lt;-</span> <span class="fu">request</span>(final_url) </span>
+<span id="cb7-13"><a></a>  resp <span class="ot">&lt;-</span> <span class="fu">req_perform</span>(req)</span>
+<span id="cb7-14"><a></a></span>
+<span id="cb7-15"><a></a>  <span class="co"># if request is not successful</span></span>
+<span id="cb7-16"><a></a>  <span class="cf">if</span> (<span class="fu">resp_status</span>(resp) <span class="sc">!=</span> <span class="dv">200</span>){</span>
+<span id="cb7-17"><a></a>    <span class="fu">message</span>(<span class="st">"The request was not successful"</span>)</span>
+<span id="cb7-18"><a></a>  }</span>
+<span id="cb7-19"><a></a>  <span class="cf">else</span>{</span>
+<span id="cb7-20"><a></a>    <span class="fu">return</span>(<span class="fu">resp_body_json</span>(resp))</span>
+<span id="cb7-21"><a></a>  }</span>
+<span id="cb7-22"><a></a>}</span>
+<span id="cb7-23"><a></a></span>
+<span id="cb7-24"><a></a><span class="fu">get_latest_rate</span>(<span class="st">"EUR"</span>, <span class="st">"CHF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="tabset-4-2">
-<!-- TODO: determine how to do the period thing, 5 works, but isn't specified here -->
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>$country
-[1] "Switzerland"
+<pre><code>$amount
+[1] 1
 
-$province
-$province[[1]]
-[1] "mainland"
+$base
+[1] "EUR"
 
+$date
+[1] "2026-10-09"
 
-$timeline
-$timeline$cases
-$timeline$cases$`3/5/23`
-[1] 4412439
-
-$timeline$cases$`3/6/23`
-[1] 4412439
-
-$timeline$cases$`3/7/23`
-[1] 4413911
-
-$timeline$cases$`3/8/23`
-[1] 4413911
-
-$timeline$cases$`3/9/23`
-[1] 4413911
-
-
-$timeline$deaths
-$timeline$deaths$`3/5/23`
-[1] 14207
-
-$timeline$deaths$`3/6/23`
-[1] 14207
-
-$timeline$deaths$`3/7/23`
-[1] 14207
-
-$timeline$deaths$`3/8/23`
-[1] 14209
-
-$timeline$deaths$`3/9/23`
-[1] 14210
-
-
-$timeline$recovered
-$timeline$recovered$`3/5/23`
-[1] 0
-
-$timeline$recovered$`3/6/23`
-[1] 0
-
-$timeline$recovered$`3/7/23`
-[1] 0
-
-$timeline$recovered$`3/8/23`
-[1] 0
-
-$timeline$recovered$`3/9/23`
-[1] 0</code></pre>
+$rates
+$rates$CHF
+[1] 0.9313</code></pre>
 </div>
 </div>
 </div>
@@ -952,19 +917,54 @@ $timeline$recovered$`3/9/23`
 <section id="exercise-description" class="slide level2 smaller">
 <h2>Exercise Description</h2>
 <ul>
-<li>use the API documentation: <a href="https://disease.sh/docs/">https://disease.sh/docs/</a></li>
-<li>use the template to write a function <strong>to get vaccination rates for a country</strong></li>
+<li>use the API documentation: <a href="https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json">https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json</a></li>
+<li>use the template to write a function <strong>to get the exchange rate on a past date</strong></li>
+<li><strong>How many Swiss francs did one euro cost on 31 December 2025?</strong></li>
 </ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">library</span>(httr2)</span>
+<span id="cb9-2"><a></a></span>
+<span id="cb9-3"><a></a>get_rate_on <span class="ot">&lt;-</span> <span class="cf">function</span>(date, <span class="at">base =</span> <span class="st">"EUR"</span>, <span class="at">symbols =</span> <span class="st">"CHF"</span>){</span>
+<span id="cb9-4"><a></a></span>
+<span id="cb9-5"><a></a>  base_url <span class="ot">&lt;-</span> <span class="st">"..."</span></span>
+<span id="cb9-6"><a></a>  final_url <span class="ot">&lt;-</span> <span class="st">"..."</span></span>
+<span id="cb9-7"><a></a></span>
+<span id="cb9-8"><a></a>  <span class="co"># perform  API call with httr2</span></span>
+<span id="cb9-9"><a></a>  req <span class="ot">&lt;-</span> <span class="st">"..."</span>(final_url) </span>
+<span id="cb9-10"><a></a>  resp <span class="ot">&lt;-</span> <span class="st">"..."</span>(req)</span>
+<span id="cb9-11"><a></a></span>
+<span id="cb9-12"><a></a>  <span class="co"># if request is not successful</span></span>
+<span id="cb9-13"><a></a>  <span class="cf">if</span> (<span class="fu">resp_status</span>(resp) <span class="sc">!=</span> <span class="dv">200</span>){</span>
+<span id="cb9-14"><a></a>    <span class="fu">message</span>(<span class="st">"The request was not successful"</span>)</span>
+<span id="cb9-15"><a></a>  }</span>
+<span id="cb9-16"><a></a>  <span class="cf">else</span>{</span>
+<span id="cb9-17"><a></a>    <span class="fu">return</span>(<span class="fu">resp_body_json</span>(resp))</span>
+<span id="cb9-18"><a></a>  }</span>
+<span id="cb9-19"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>copy this template at: <a href="https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description">https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description</a> <!-- TODO: add the specific slide here  --></li>
+</ul>
+</section></section>
+<section>
+<section id="sample-solution" class="title-slide slide level1 center">
+<h1>Sample Solution</h1>
+
+</section>
+<section id="get-the-exchange-rate-on-a-past-date" class="slide level2 smaller">
+<h2>GET the Exchange Rate on a past Date</h2>
+<div class="panel-tabset">
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Code 1</a></li><li><a href="#tabset-5-2">Code 2</a></li><li><a href="#tabset-5-3">Data</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1">
 <div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">library</span>(httr2)</span>
 <span id="cb10-2"><a></a></span>
-<span id="cb10-3"><a></a>get_country_vaccine_rates <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">country =</span> <span class="st">"CH"</span>, <span class="at">period =</span> <span class="st">"all"</span>){</span>
-<span id="cb10-4"><a></a></span>
-<span id="cb10-5"><a></a>  base_url <span class="ot">&lt;-</span> <span class="st">"..."</span></span>
-<span id="cb10-6"><a></a>  final_url <span class="ot">&lt;-</span> <span class="st">"..."</span></span>
+<span id="cb10-3"><a></a>get_rate_on <span class="ot">&lt;-</span> <span class="cf">function</span>(date, <span class="at">base =</span> <span class="st">"EUR"</span>, <span class="at">symbols =</span> <span class="st">"CHF"</span>){</span>
+<span id="cb10-4"><a></a>  <span class="co"># https://api.frankfurter.dev/v1/2025-12-31?base=EUR&amp;symbols=CHF</span></span>
+<span id="cb10-5"><a></a>  base_url <span class="ot">&lt;-</span> <span class="st">"https://api.frankfurter.dev/v1"</span></span>
+<span id="cb10-6"><a></a>  final_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url, <span class="st">"/"</span>, date, <span class="st">"?base="</span>, base, <span class="st">"&amp;symbols="</span>, symbols)</span>
 <span id="cb10-7"><a></a></span>
 <span id="cb10-8"><a></a>  <span class="co"># perform  API call with httr2</span></span>
-<span id="cb10-9"><a></a>  req <span class="ot">&lt;-</span> <span class="st">"..."</span>(final_url) </span>
-<span id="cb10-10"><a></a>  resp <span class="ot">&lt;-</span> <span class="st">"..."</span>(req)</span>
+<span id="cb10-9"><a></a>  req <span class="ot">&lt;-</span> <span class="fu">request</span>(final_url) </span>
+<span id="cb10-10"><a></a>  resp <span class="ot">&lt;-</span> <span class="fu">req_perform</span>(req)</span>
 <span id="cb10-11"><a></a></span>
 <span id="cb10-12"><a></a>  <span class="co"># if request is not successful</span></span>
 <span id="cb10-13"><a></a>  <span class="cf">if</span> (<span class="fu">resp_status</span>(resp) <span class="sc">!=</span> <span class="dv">200</span>){</span>
@@ -973,31 +973,20 @@ $timeline$recovered$`3/9/23`
 <span id="cb10-16"><a></a>  <span class="cf">else</span>{</span>
 <span id="cb10-17"><a></a>    <span class="fu">return</span>(<span class="fu">resp_body_json</span>(resp))</span>
 <span id="cb10-18"><a></a>  }</span>
-<span id="cb10-19"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ul>
-<li>copy this template at: <a href="https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html">https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html</a></li>
-</ul>
-</section></section>
-<section>
-<section id="sample-solution" class="title-slide slide level1 center">
-<h1>Sample Solution</h1>
-
-</section>
-<section id="get-vaccine-rates" class="slide level2 smaller">
-<h2>GET Vaccine Rates</h2>
-<div class="panel-tabset">
-<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Code 1</a></li><li><a href="#tabset-5-2">Code 2</a></li><li><a href="#tabset-5-3">Data</a></li></ul>
-<div class="tab-content">
-<div id="tabset-5-1">
+<span id="cb10-19"><a></a>}</span>
+<span id="cb10-20"><a></a></span>
+<span id="cb10-21"><a></a><span class="fu">get_rate_on</span>(<span class="st">"2025-12-31"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="tabset-5-2">
 <div class="sourceCode" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">library</span>(httr2)</span>
 <span id="cb11-2"><a></a></span>
-<span id="cb11-3"><a></a>get_country_vaccine_rates <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">country =</span> <span class="st">"CH"</span>, <span class="at">period =</span>  <span class="st">"all"</span>){</span>
-<span id="cb11-4"><a></a>  <span class="co"># https://disease.sh/v3/covid-19/vaccine/coverage/countries/CH?lastdays=30&amp;fullData=false</span></span>
-<span id="cb11-5"><a></a>  base_url <span class="ot">&lt;-</span> <span class="st">"https://disease.sh/v3/covid-19/vaccine/coverage/countries"</span></span>
-<span id="cb11-6"><a></a>  final_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url, <span class="st">"/"</span>, country, <span class="st">"?lastdays="</span>, period, <span class="st">"&amp;fullData=false"</span>)</span>
-<span id="cb11-7"><a></a></span>
-<span id="cb11-8"><a></a>  <span class="co"># perform  API call with httr2</span></span>
-<span id="cb11-9"><a></a>  req <span class="ot">&lt;-</span> <span class="fu">request</span>(final_url) </span>
+<span id="cb11-3"><a></a>get_rate_on <span class="ot">&lt;-</span> <span class="cf">function</span>(date, <span class="at">base =</span> <span class="st">"EUR"</span>, <span class="at">symbols =</span> <span class="st">"CHF"</span>){</span>
+<span id="cb11-4"><a></a>  <span class="co"># https://api.frankfurter.dev/v1/2025-12-31?base=EUR&amp;symbols=CHF</span></span>
+<span id="cb11-5"><a></a>  req <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.frankfurter.dev/v1"</span>) <span class="sc">|&gt;</span>  <span class="co"># base url</span></span>
+<span id="cb11-6"><a></a>    <span class="fu">req_url_path_append</span>(date) <span class="sc">|&gt;</span>                       <span class="co"># path param</span></span>
+<span id="cb11-7"><a></a>    <span class="fu">req_url_query</span>(<span class="at">base =</span> base, <span class="at">symbols =</span> symbols)      <span class="co"># query params</span></span>
+<span id="cb11-8"><a></a></span>
+<span id="cb11-9"><a></a>  <span class="co"># perform  API call with httr2</span></span>
 <span id="cb11-10"><a></a>  resp <span class="ot">&lt;-</span> <span class="fu">req_perform</span>(req)</span>
 <span id="cb11-11"><a></a></span>
 <span id="cb11-12"><a></a>  <span class="co"># if request is not successful</span></span>
@@ -1009,52 +998,23 @@ $timeline$recovered$`3/9/23`
 <span id="cb11-18"><a></a>  }</span>
 <span id="cb11-19"><a></a>}</span>
 <span id="cb11-20"><a></a></span>
-<span id="cb11-21"><a></a><span class="fu">get_country_vaccine_rates</span>(<span class="st">"CH"</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div id="tabset-5-2">
-<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">library</span>(httr2)</span>
-<span id="cb12-2"><a></a></span>
-<span id="cb12-3"><a></a>get_country_vaccine_rates <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">country =</span> <span class="st">"CH"</span>, <span class="at">period =</span>  <span class="st">"all"</span>){</span>
-<span id="cb12-4"><a></a>  <span class="co"># https://disease.sh/v3/covid-19/vaccine/coverage/countries/CH?lastdays=30&amp;fullData=false</span></span>
-<span id="cb12-5"><a></a>  base_url <span class="ot">&lt;-</span> <span class="st">"https://disease.sh/v3/covid-19/vaccine/coverage/countries"</span></span>
-<span id="cb12-6"><a></a>  final_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url, <span class="st">"/"</span>, country, <span class="st">"?lastdays="</span>, period, <span class="st">"&amp;fullData=false"</span>)</span>
-<span id="cb12-7"><a></a></span>
-<span id="cb12-8"><a></a>  <span class="co"># perform  API call with httr2</span></span>
-<span id="cb12-9"><a></a>  req <span class="ot">&lt;-</span> <span class="fu">request</span>(final_url) </span>
-<span id="cb12-10"><a></a>  resp <span class="ot">&lt;-</span> <span class="fu">req_perform</span>(req)</span>
-<span id="cb12-11"><a></a></span>
-<span id="cb12-12"><a></a>  <span class="co"># if request is not successful</span></span>
-<span id="cb12-13"><a></a>  <span class="cf">if</span> (<span class="fu">resp_status</span>(resp) <span class="sc">!=</span> <span class="dv">200</span>){</span>
-<span id="cb12-14"><a></a>    <span class="fu">message</span>(<span class="st">"The request was not successful"</span>)</span>
-<span id="cb12-15"><a></a>  }</span>
-<span id="cb12-16"><a></a>  <span class="cf">else</span>{</span>
-<span id="cb12-17"><a></a>    <span class="fu">return</span>(<span class="fu">resp_body_json</span>(resp))</span>
-<span id="cb12-18"><a></a>  }</span>
-<span id="cb12-19"><a></a>}</span>
-<span id="cb12-20"><a></a></span>
-<span id="cb12-21"><a></a><span class="fu">get_country_vaccine_rates</span>(<span class="st">"CH"</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-21"><a></a><span class="fu">get_rate_on</span>(<span class="st">"2025-12-31"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="tabset-5-3">
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>$country
-[1] "Switzerland"
+<pre><code>$amount
+[1] 1
 
-$timeline
-$timeline$`7/17/25`
-[1] 16940716
+$base
+[1] "EUR"
 
-$timeline$`7/18/25`
-[1] 16940716
+$date
+[1] "2025-12-31"
 
-$timeline$`7/19/25`
-[1] 16940716
-
-$timeline$`7/20/25`
-[1] 16940716
-
-$timeline$`7/21/25`
-[1] 16940716</code></pre>
+$rates
+$rates$CHF
+[1] 0.9314</code></pre>
 </div>
 </div>
 </div>
@@ -1064,6 +1024,7 @@ $timeline$`7/21/25`
 <section id="other-examples-of-apis-api-wrappers-for-economic-data" class="slide level2 smaller">
 <h2>Other examples of APIs &amp; API wrappers for economic data</h2>
 <ul>
+<li>the <a href="https://github.com/opentsi/opentimeseries">opentimeseries</a> R Package (for versioned, open time series)</li>
 <li>the <a href="https://www.rdocumentation.org/packages/kofdata/versions/0.2.1">kofdata</a> R Package (for KOF data)</li>
 <li>the <a href="https://felixluginbuhl.com/BFS/">BFS</a> R package (for Swiss federal statistics)</li>
 <li>the <a href="https://pypi.org/project/fredapi/">fredapi</a> Python Library (for US economic data)</li>
@@ -1075,14 +1036,12 @@ $timeline$`7/21/25`
 <h2>Thank you for your attention!</h2>
 <p>If you are interested in working with us or if you have any questions:</p>
 <ul>
-<li>source code: <a href="https://github.com/minnaheim/dh_guest_lecture_2025">https://github.com/minnaheim/dh_guest_lecture_2025</a></li>
-<li>slides: <a href="https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html">https://minnaheim.github.io/dh_guest_lecture_2025/presentation.html/</a></li>
-<li>find us at <a href="https://rseed.ch">rseed.ch</a></li>
-<li>contact me: <a href="mailto:heim@kof.ethz.ch">heim@kof.ethz.ch</a></li>
+<li>source code: <a href="https://github.com/minnaheim/dh_guest_lecture_2026">https://github.com/minnaheim/dh_guest_lecture_2026</a></li>
+<li>slides: <a href="https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html">https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html/</a></li>
+<li>contact me: <a href="mailto:minnaemiliahagen.heim@uzh.ch">minnaemiliahagen.heim@uzh.ch</a></li>
 </ul>
 
 <div class="quarto-auto-generated-content">
-<p><img src="img/rseed-pos.png" class="slide-logo"></p>
 <div class="footer footer-default">
 
 </div>
@@ -1425,7 +1384,7 @@ $timeline$`7/21/25`
       }
         var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
         var mailtoRegex = new RegExp(/^mailto:/);
-          var filterRegex = new RegExp("https:\/\/minnaheim\.github\.io\/dh_guest_lecture_2025\/presentation\.html");
+          var filterRegex = new RegExp("https:\/\/minnaheim\.github\.io\/dh_guest_lecture_2026\/");
         var isInternal = (href) => {
             return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }
