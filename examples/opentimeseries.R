@@ -21,37 +21,18 @@ datasets <- list_archives()
 datasets
 # works well, could use this for the example...
 
-# lets try getting the ts with excel
-
+# lets try getting the tourism ts with excel
 library(readxl)
 library(tidyr)
 
+trsm <- read_xlsx("examples/kof_ch.kof.trsm.fcst.year_ts_2026-10-10_17_41_56.xlsx") 
 
-monthly <- read_xlsx(
-  "examples/je-d-03.03.01.01.xlsx",
-  sheet = 2,        # select only 2nd sheet 
-  col_names = FALSE # keep excel row numbers
-)
+# subset only the column that includes the series we want
+total <- trsm[, c("date", "ch.kof.trsm.fcst.ty.l.all.ch.lg")]
+names(total) <- c("Date", "Overnight_Stays") # rename cols
 
-# subset only the rows 3 (= month) and 4 (= total), drop the label column
-total <- monthly[4, -1] 
-names(total) <- unlist(monthly[3, -1])
+# convert overnight stays to num and date to date
+total$Overnight_Stays <- as.numeric(total$Overnight_Stays)
+total$Date <- as.Date(total$Date)
 
-# pivot data longer (from excel wide format to data frame long format)
-unemp_long <- total |>
-  pivot_longer(
-    cols = everything(),
-    names_to = "Month",
-    values_to = "Unemployed"
-  )
-# str(unemp_long)
-
-# convert unemployed to num and month to date
-total_long$Unemployed <- as.numeric(total_long$Unemployed)
-total_long$Date <- seq(
-  as.Date("1991-01-01"),
-  by = "month",
-  length.out = nrow(total_long)
-)
-
-head(total_long, n = 10)
+head(total, n = 10)
