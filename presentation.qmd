@@ -548,7 +548,7 @@ get_country_vaccine_rates <- function(country = "CH", period = "all"){
 
 ::: {.panel-tabset}
 
-### Code 
+### Code 1
 
 ```r
 library(httr2)
@@ -573,6 +573,33 @@ get_country_vaccine_rates <- function(country = "CH", period =  "all"){
 
 get_country_vaccine_rates("CH", 5)
 ```
+
+### Code 2
+
+```r
+library(httr2)
+
+get_country_vaccine_rates <- function(country = "CH", period =  "all"){
+  # https://disease.sh/v3/covid-19/vaccine/coverage/countries/CH?lastdays=30&fullData=false
+  base_url <- "https://disease.sh/v3/covid-19/vaccine/coverage/countries"
+  final_url <- paste0(base_url, "/", country, "?lastdays=", period, "&fullData=false")
+
+  # perform  API call with httr2
+  req <- request(final_url) 
+  resp <- req_perform(req)
+
+  # if request is not successful
+  if (resp_status(resp) != 200){
+    message("The request was not successful")
+  }
+  else{
+    return(resp_body_json(resp))
+  }
+}
+
+get_country_vaccine_rates("CH", 5)
+```
+
 
 ### Data
 

@@ -4,8 +4,8 @@
 library(tidyverse)
 library(BFS)
 
-bfs_get_catalog_data(language = "en", title = "energy")
-dataset_nr <- "px-x-0204000000_106"
+catalog <- bfs_get_catalog_data(language = "en", title = "energy")
+dataset_nr <- catalog$number_bfs[1]
 energy_df <- bfs_get_data(dataset_nr, lang = "en")
 
 # filter only total energy accounts

@@ -4,6 +4,16 @@ author: "Minna Heim"
 date: today
 ---
 
+<!-- 
+## What is good API Design
+verbs, not nouns & plural
+return codes & give good errors
+intuitive & hard to misuse
+information hiding 
+handling complexity
+  ? vs. path: limit responses behind the ‘?’ in a query parameter, or isolate specific component of the data the client is working with using a path parameter.
+-->
+
 ## The Problem: Why Your Swiss Economic Analysis is Always Out of Date
 
 Imagine you're writing your Bachelor's thesis on Swiss economic forecasting. You want to analyze how well the **KOF Konjunkturbarometer** (a leading economic indicator that predicts Switzerland's near-future economic development) performs compared to actual economic outcomes. 
@@ -44,7 +54,7 @@ For Swiss economic data, you have ready-made tools like:
 
 ### Example: Getting KOF Barometer Data the Smart Way
 
-Remember our thesis scenario? Here's how you'd solve it using the `kofdata` R package, which connects directly to the [KOF API](https://datenservice.kof.ethz.ch/). Instead of manual downloads, you get live, up-to-date data with just a few lines of code: 
+Remember our thesis scenario? Here's how you'd solve it using the `kofdata` R package, which is an R wrapper for the [KOF API](https://datenservice.kof.ethz.ch/). Instead of manual downloads, you get live, up-to-date data with just a few lines of code: 
 
 ```{r, warning=FALSE, message=FALSE}
 # install.packages("kofdata")
@@ -73,8 +83,7 @@ The benefits of using API are the following:
 
 Your thesis supervisor asks for updated results? Just re-run your code. The KOF releases revised data? Your analysis automatically uses the latest version. This is why experienced economists swear by APIs.
 
-But what if there's no ready-made wrapper for the data you need? Let's learn how APIs actually work under the hood, so you can build your own solutions.
-
+But what if there's no ready-made wrapper for the data you need? Let's learn how APIs actually work under the hood, so you can build your own solutions, whether that be your own API Wrapper, or even your own API (if you have access to and want to share your own data).
 
 ## Building Custom API Wrappers
 <!-- TODO: do this but instead of collection, get different data series, that doesn't exist, or different data, or something -->
