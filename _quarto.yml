@@ -1,11 +1,9 @@
 project:
   type: website
-  # resources:
-  #   - "images/twitter-card.png"
-  #   - "data"
   render:
     - "*.qmd"
     - "!blog-api.qmd"
+    - "!lecture_blogpost.qmd"
 
 website:
   page-navigation: true
@@ -14,23 +12,8 @@ website:
   repo-url: https://github.com/minnaheim/dh_guest_lecture_2026
   repo-actions: [edit, issue]
 
-  # page-footer:
-  #   left: "This page is built with ❤️ and [Quarto](https://quarto.org/)."
-  #   background: "#426D98"
-
-  # navbar:
-  #   background: "#426D98"
-  #   pinned: true
-  #   align: center
-
 
 format:
   html:
     theme:
       light: [cosmo, theme.scss]
-
-#     toc: true
-#     code-copy: true
-#     code-overflow: wrap
-#     mainfont: "Open Sans"
-#     # include-after-body: plausible.html
