@@ -1,12 +1,12 @@
 ---
 title: "APIs for Economic Data"
-subtitle: "Guest Lecture 2025"
+subtitle: "Guest Lecture 2026"
 author: "Minna Heim"
 # aurel: added the most important :-)
 format:
   revealjs:
     slide-number: true
-    logo: img/rseed-pos.png
+  #  logo: img/rseed-pos.png
 ---
 
 ## Intro {visibility="hidden"}
@@ -29,12 +29,14 @@ Let's pretend, we want to reconstruct our own economic index  -->
 <!-- TODO: use swiss baro, not global -->
 ```{r kofdata, echo=FALSE, message=FALSE, warning=FALSE, results='hide', fig.keep='all'}
 suppressPackageStartupMessages(library(kofdata))
-library(kofdata)
+# devtools::install_github("opentsi/opentimeseries")
+library(opentimeseries)
 
-data <- get_time_series("kofbarometer")
+baro <- read_open_ts(series = "idx", remote_archive = "opentsi/ch.kof.barometer")
+baro_start <- as.integer(format(min(baro$date), c("%Y", "%m")))
 
 plot <- stats::ts.plot(
-  data$kofbarometer,
+  ts(baro$value, start = baro_start, frequency = 12),
   gpars = list(
     xlab = "Year",
     ylab = "Value",
@@ -46,13 +48,14 @@ plot
 
 ## About me 
 
-- I took this course 4 years ago!
+- I took this course 5 years ago!
 - Doing a Master in Data Science & minor in Economics at UZH
-- Working at KOF-ETH
+- Worked at KOF-ETH
 
-<!-- Speaker Notes: I work in the institute that produces the data i just showed you -->
+<!-- TODO: disclaimer, views are mine, not SNBs -->
+<!-- Speaker Notes: I used to work in the institute that produces the data i just showed you -->
 
-## About the institute and our work
+## About the institute and its work
 
 :::: {.columns}
 ::: {.column width="40%"}
@@ -66,7 +69,7 @@ plot
 - software, infrastructure and data publications with economic use cases.
 - teaching PhD students to work with data & open source ecosystem. 
 :::
-::::
+:::: 
 
 ## What will you know by the end of this lecture?
 - gain a better understanding of how APIs are used
@@ -79,23 +82,27 @@ Speaker Notes:
 
 Brainstorming session: what kind of variables could be relevant for our economic index?
 
-- what kind of data do you need to construct your own index that best represents Swiss Economic Activity
+- what kind of data do you need to construct your own index that best represents Swiss Economic Activity?
 - you need: gdp, energy consumption, demographic information, swiss market index (smi), etc. 
 - how would you get all of this data?
 -->
 # Naive Way
 
 ## 
+<!-- instead of BIP, use unemployment... -->
 ![](img/google_datasets.png){fig-align="center"}
 
 ## 
-![](img/wirtschaftsdaten.png){fig-align="center"}
+![](img/bfs_homepage.png){fig-align="center"}
 
 ## 
-![](img/search.png){fig-align="center"}
+![](img/more_info.png){fig-align="center"}
 
 ## 
-![](img/downloaded.png){fig-align="center"}
+![](img/download_page.png){fig-align="center"}
+
+## 
+![](img/excel.png){fig-align="center"}
 <!-- Speaker Notes: it looks like this (wide format) because its nice to look at & humanly readable
 long: machine friendly,  R plotting packages in prefer long
 
@@ -113,29 +120,29 @@ now that we have downloaded the data, we need to import and clean it, so we can 
 ### Code {.smaller}
 ```r 
 library(readxl)
-library(magrittr)
 library(tidyr)
+library(dplyr)
 
-data <- read_xlsx("examples/je-d-04.02.01.03.xlsx") 
+monthly <- read_xlsx(
+  "examples/je-d-03.03.01.01.xlsx",
+  sheet = 2,        # select only 2nd sheet 
+  col_names = FALSE # keep excel row numbers
+)
 
-# subset only the rows 3 (= year) and 9 (= gdp)
-gdp <- data[9,]
-names(gdp) <- data[3,]
+# subset only the rows 3 (= month) and 4 (= total), drop the label column
+total <- monthly[4, -1] 
+names(total) <- unlist(monthly[3, -1])
 
 # pivot data longer (from excel wide format to data frame long format)
-gdp_long <- gdp %>%
-  pivot_longer(cols = everything(), names_to = "Year", values_to = "GDP")
+unemp_long <- total |> pivot_longer(cols = everything(), names_to = "Month", values_to = "Unemployed")
 
-# remove old headers (before pivot these used to be the first two columns)
-gdp_long <- gdp_long[-c(1:2),]
-# check structure
-# str(gdp_long)
+# convert unemployed to num and month to date
+unemp_long$Unemployed <- as.numeric(unemp_long$Unemployed)
+unemp_long$Date <- seq(as.Date("1991-01-01"), by = "month", length.out = nrow(unemp_long))
 
-# convert to gdp num and year to int
-gdp_long$GDP <- as.numeric(gdp_long$GDP)
-gdp_long$Year <- as.integer(gdp_long$Year)
-
-head(gdp_long, n=10)
+# remove old month col
+unemp_long <- unemp_long |> select(Unemployed, Date)
+head(unemp_long, n = 10)
 ```
 
 ### Data
@@ -149,48 +156,47 @@ long: values are vertically oriented
 
  -->
 ```{r import data}
-#### import gdp data manually
 library(readxl)
-library(magrittr)
 library(tidyr)
+library(dplyr)
 
-data <- read_xlsx("examples/je-d-04.02.01.03.xlsx") 
+monthly <- read_xlsx(
+  "examples/je-d-03.03.01.01.xlsx",
+  sheet = 2, # select only 2nd sheet
+  col_names = FALSE # keep excel row numbers
+)
 
-# inspect data
-# head(data)
-# View(data)
-
-# subset only the rows 3 (= year) and 9 (= gdp)
-gdp <- data[9,]
-names(gdp) <- data[3,]
+# subset only the rows 3 (= month) and 4 (= total), drop the label column
+total <- monthly[4, -1]
+names(total) <- unlist(monthly[3, -1])
 
 # pivot data longer (from excel wide format to data frame long format)
-gdp_long <- gdp %>%
+unemp_long <- total |>
   pivot_longer(
     cols = everything(),
-    names_to = "Year",
-    values_to = "GDP"
+    names_to = "Month",
+    values_to = "Unemployed"
   )
+# str(unemp_long)
 
-# remove old headers 
-gdp_long <- gdp_long[-c(1:2),]
+# convert unemployed to num and month to date
+unemp_long$Unemployed <- as.numeric(unemp_long$Unemployed)
+unemp_long$Date <- seq(
+  as.Date("1991-01-01"),
+  by = "month",
+  length.out = nrow(unemp_long)
+)
+# remove old month col
+unemp_long <- unemp_long |> select(Unemployed, Date)
 
-# check structure
-# str(gdp_long)
-
-# convert to gdp numeric and year to year
-gdp_long$GDP <- as.numeric(gdp_long$GDP)
-gdp_long$Year <- as.integer(gdp_long$Year)
-
-head(gdp_long, n=10)
-
+head(unemp_long, n = 10)
 ```
 
 :::
 
 # API (wrapper) way
 
-
+<!-- TODO: CHANGE THE MET EXAMPLE TO SOMETHING ELSE? -->
 <!-- Speaker Notes: 
 - getting gdp data from above was hard because we weren't sure where to find what, and how it was gonna look (=which format) 
 
@@ -309,44 +315,44 @@ head(total_energy, n=10)
 ### output 1
 
 ```{r catalog data}
-library(BFS)
-print(bfs_get_catalog_data(language = "en", title = "energy"))
+# library(BFS)
+# print(bfs_get_catalog_data(language = "en", title = "energy"))
 ```
 
 ### output 2
 ```{r bfs api wrapper}
 # devtools::install_github("lgnbhl/BFS")
-library(BFS)
+# library(BFS)
 
-# bfs_get_catalog_data(language = "en", title = "energy")
-dataset_nr <- "px-x-0204000000_106"
-energy_df <- bfs_get_data(dataset_nr, lang = "en")
-head(energy_df)
+# # bfs_get_catalog_data(language = "en", title = "energy")
+# dataset_nr <- "px-x-0204000000_106"
+# energy_df <- bfs_get_data(dataset_nr, lang = "en")
+# head(energy_df)
 ```
 
 ### output 3
 ```{r bfs api wrapper tidyverse}
 # devtools::install_github("lgnbhl/BFS")
-library(BFS)
+# library(BFS)
 
-# bfs_get_catalog_data(language = "en", title = "energy")
-dataset_nr <- "px-x-0204000000_106"
-energy_df <- bfs_get_data(dataset_nr, lang = "en")
+# # bfs_get_catalog_data(language = "en", title = "energy")
+# dataset_nr <- "px-x-0204000000_106"
+# energy_df <- bfs_get_data(dataset_nr, lang = "en")
 
-# filter only total energy accounts
-total_energy <- subset(
-  energy_df,
-  # filter for totals for each of the columns 
-  `Economy and households` == "Economy and households - Total" &
-  `Energy product` == "Energy product - Total",
-  # select only the two relevant columns
-  select = c(Year, `Energy accounts of economy and households`)
-)
+# # filter only total energy accounts
+# total_energy <- subset(
+#   energy_df,
+#   # filter for totals for each of the columns
+#   `Economy and households` == "Economy and households - Total" &
+#     `Energy product` == "Energy product - Total",
+#   # select only the two relevant columns
+#   select = c(Year, `Energy accounts of economy and households`)
+# )
 
-names(total_energy)[2] <- "Amount"
+# names(total_energy)[2] <- "Amount"
 
-# View(total_energy)
-head(total_energy, n=10)
+# # View(total_energy)
+# head(total_energy, n = 10)
 ```
 
 :::
@@ -489,7 +495,7 @@ get_case_counts("CH", 5)
 ```{r covid wrapper}
 library(httr2)
 
-get_case_counts <- function(country = "CH", period = "all"){
+get_case_counts <- function(country = "CH", period = "all") {
   # "https://disease.sh/v3/covid-19/historical/CH?lastdays=30"
   # this way is error prone, try to match.args to check if the inputs are correct
   base_url <- "https://disease.sh/v3/covid-19/historical"
@@ -500,10 +506,9 @@ get_case_counts <- function(country = "CH", period = "all"){
   resp <- req_perform(req)
 
   # if request is not successful
-  if (resp_status(resp) != 200){
+  if (resp_status(resp) != 200) {
     message("The request was not successful")
-  }
-  else{
+  } else {
     return(resp_body_json(resp))
   }
 }
@@ -606,20 +611,19 @@ get_country_vaccine_rates("CH", 5)
 ```{r}
 library(httr2)
 
-get_country_vaccine_rates <- function(country = "CH", period = "all"){
+get_country_vaccine_rates <- function(country = "CH", period = "all") {
   # https://disease.sh/v3/covid-19/vaccine/coverage/countries/CH?lastdays=30&fullData=false
   base_url <- "https://disease.sh/v3/covid-19/vaccine/coverage/countries"
   final_url <- paste0(base_url, "/", country, "?lastdays=", period, "&fullData=false")
 
   # perform  API call with httr2
-  req <- request(final_url) 
+  req <- request(final_url)
   resp <- req_perform(req)
 
   # if request is not successful
-  if (resp_status(resp) != 200){
+  if (resp_status(resp) != 200) {
     message("The request was not successful")
-  }
-  else{
+  } else {
     return(resp_body_json(resp))
   }
 }
