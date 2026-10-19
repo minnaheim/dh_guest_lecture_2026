@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.5.45">
 
   <meta name="author" content="Minna Heim">
-  <title>Guest Lecture Slides 2025 – APIs for Economic Data</title>
+  <title>Guest Lecture Slides 2026 – APIs for Economic Data</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -419,33 +419,33 @@ Let's pretend, we want to reconstruct our own economic index  -->
 <ul>
 <li>I took this course 5 years ago!</li>
 <li>Doing a Master in Data Science &amp; minor in Economics at UZH</li>
-<li>Worked at KOF-ETH</li>
+<li>Worked at KOF-ETH &amp; built Opentsi</li>
 </ul>
 <!-- TODO: disclaimer, views are mine, not SNBs -->
 <!-- Speaker Notes: I used to work in the institute that produces the data i just showed you -->
+<!-- ## About the institute and its work
+
+:::: {.columns}
+::: {.column width="40%"}
+![](img/ETH_Fremdmedienlogo_KOF_horizontal_pos.png)
+![](img/rseed-pos.png)
+![](img/h4sci-logo-web.svg){width="50%"}
+:::
+
+::: {.column width="60%"}
+- from surveys to innovation to forecasting
+- software, infrastructure and data publications with economic use cases.
+- teaching PhD students to work with data & open source ecosystem. 
+:::
+::::  -->
 </section>
-<section id="about-the-institute-and-its-work" class="slide level2">
-<h2>About the institute and its work</h2>
-<div class="columns">
-<div class="column" style="width:40%;">
-<p><img data-src="img/ETH_Fremdmedienlogo_KOF_horizontal_pos.png"> <img data-src="img/rseed-pos.png"> <img data-src="img/h4sci-logo-web.svg" style="width:50.0%"></p>
-</div><div class="column" style="width:60%;">
-<ul>
-<li>from surveys to innovation to forecasting</li>
-<li>software, infrastructure and data publications with economic use cases.</li>
-<li>teaching PhD students to work with data &amp; open source ecosystem.</li>
-</ul>
-</div>
-</div>
-</section>
-<section id="one-of-my-projects-opentsi" class="slide level2">
-<h2>One of my projects: Opentsi</h2>
+<section id="about-opentsi" class="slide level2">
+<h2>About Opentsi</h2>
 <!-- TODO: reveal here? -->
 <ul>
+<li>See <a href="https://opentsi.github.io/">opentsi.github.io</a></li>
 <li>vintages made public for research purposes, automatically maintained</li>
 <li>plenty of API usage (for economic purposes)</li>
-<li>so perfect for this lecture</li>
-<li>will be used in this lecture…</li>
 </ul>
 </section>
 <section id="what-will-you-know-by-the-end-of-this-lecture" class="slide level2">
@@ -485,11 +485,7 @@ Brainstorming session: what kind of variables could be relevant for our economic
 <img data-src="img/kof-website.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="section-2" class="slide level2">
 <h2></h2>
-
-<img data-src="img/download.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-3" class="slide level2">
-<h2></h2>
-<p><img data-src="img/excel-trsm.png" class="quarto-figure quarto-figure-center"> <!-- Speaker Notes: it looks like this (wide format) because its nice to look at & humanly readable
+<p><img data-src="img/download.png" class="quarto-figure quarto-figure-center"> <!-- TODO: better quality for the excel --> ## <img data-src="img/excel-trsm.png" class="quarto-figure quarto-figure-center"> <!-- Speaker Notes: it looks like this (wide format) because its nice to look at & humanly readable
 long: machine friendly,  R plotting packages in prefer long
 
 Here: I have to say that this is a "friendly example", not all data is excel, but px format - a format that many data providers prefer.
@@ -561,7 +557,7 @@ Using APIs, means everything is standardised - because of the HTTP protocol
 - just a reminder: protocol means explicit way of behaving, we as humans have implicit protocol too (like how to behave), but machines have explicit protocols, you can see this with http (how the internet works)
  -->
 </section>
-<section id="section-4" class="slide level2">
+<section id="section-3" class="slide level2">
 <h2></h2>
 <!-- Speaker Notes: 
 HTTP dictates how data exchange happens on the web, and hence essential for APIs
@@ -571,7 +567,7 @@ HTTP dictates how data exchange happens on the web, and hence essential for APIs
  -->
 
 <img data-src="./img/api_conceptual_1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-5" class="slide level2">
+<section id="section-4" class="slide level2">
 <h2></h2>
 <!--
 Speaker Notes:
@@ -580,7 +576,7 @@ not only does HTTP specify client server and request/response but:
 -->
 
 <img data-src="./img/api_conceptual_2.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-6" class="slide level2">
+<section id="section-5" class="slide level2">
 <h2></h2>
 <!-- 
 Speaker Notes:
@@ -594,7 +590,7 @@ Putting the rest of the request together ->
  -->
 
 <img data-src="./img/api_conceptual_3.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-7" class="slide level2">
+<section id="section-6" class="slide level2">
 <h2></h2>
 <!--
 Speaker Notes: 
@@ -604,7 +600,7 @@ Important here is when looking at parameters, we need to differentiate between p
  -->
 
 <img data-src="./img/api_conceptual_4.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-8" class="slide level2">
+<section id="section-7" class="slide level2">
 <h2></h2>
 <!-- 
 Speaker Notes:
@@ -614,7 +610,7 @@ response consists of status (e.g. success) and response body
  -->
 
 <img data-src="./img/api_conceptual_5.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="section-9" class="slide level2">
+<section id="section-8" class="slide level2">
 <h2></h2>
 <p><img src="./img/api_url.png" style="display:block; margin:0 auto; width:80%;"> <!-- 
 Speaker Notes: 
@@ -854,12 +850,6 @@ show: the endpoints, open /latest, click "Try it out" (fields are locked before)
 <ul>
 <li>API: <a href="https://api.frankfurter.dev/v1/latest">https://api.frankfurter.dev/v1</a></li>
 <li>documentation: <a href="https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json">https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json</a></li>
-<li>to try out an endpoint in the documentation:
-<ol type="1">
-<li>open the endpoint and click <strong>Try it out</strong></li>
-<li>for <code>symbols</code>, click <strong>Add item</strong> and enter <code>CHF</code></li>
-<li>click <strong>Execute</strong></li>
-</ol></li>
 </ul>
 </section>
 <section id="get-the-latest-exchange-rate" class="slide level2 smaller">
@@ -874,24 +864,20 @@ show: the endpoints, open /latest, click "Try it out" (fields are locked before)
 <span id="cb7-4"><a></a>  base_url <span class="ot">&lt;-</span> <span class="st">"https://api.frankfurter.dev/v1/latest"</span></span>
 <span id="cb7-5"><a></a>  final_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url, <span class="st">"?base="</span>, base, <span class="st">"&amp;symbols="</span>, symbols)</span>
 <span id="cb7-6"><a></a></span>
-<span id="cb7-7"><a></a>  <span class="co"># alternative - using magrittr pipe</span></span>
-<span id="cb7-8"><a></a>  <span class="co"># req &lt;- request(base_url) %&gt;%</span></span>
-<span id="cb7-9"><a></a>  <span class="co">#   req_url_query(base = base, symbols = symbols)</span></span>
+<span id="cb7-7"><a></a>  <span class="co"># perform API call with httr2</span></span>
+<span id="cb7-8"><a></a>  req <span class="ot">&lt;-</span> <span class="fu">request</span>(final_url) </span>
+<span id="cb7-9"><a></a>  resp <span class="ot">&lt;-</span> <span class="fu">req_perform</span>(req)</span>
 <span id="cb7-10"><a></a></span>
-<span id="cb7-11"><a></a>  <span class="co"># perform API call with httr2</span></span>
-<span id="cb7-12"><a></a>  req <span class="ot">&lt;-</span> <span class="fu">request</span>(final_url) </span>
-<span id="cb7-13"><a></a>  resp <span class="ot">&lt;-</span> <span class="fu">req_perform</span>(req)</span>
-<span id="cb7-14"><a></a></span>
-<span id="cb7-15"><a></a>  <span class="co"># if request is not successful</span></span>
-<span id="cb7-16"><a></a>  <span class="cf">if</span> (<span class="fu">resp_status</span>(resp) <span class="sc">!=</span> <span class="dv">200</span>){</span>
-<span id="cb7-17"><a></a>    <span class="fu">message</span>(<span class="st">"The request was not successful"</span>)</span>
-<span id="cb7-18"><a></a>  }</span>
-<span id="cb7-19"><a></a>  <span class="cf">else</span>{</span>
-<span id="cb7-20"><a></a>    <span class="fu">return</span>(<span class="fu">resp_body_json</span>(resp))</span>
-<span id="cb7-21"><a></a>  }</span>
-<span id="cb7-22"><a></a>}</span>
-<span id="cb7-23"><a></a></span>
-<span id="cb7-24"><a></a><span class="fu">get_latest_rate</span>(<span class="st">"EUR"</span>, <span class="st">"CHF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-11"><a></a>  <span class="co"># if request is not successful</span></span>
+<span id="cb7-12"><a></a>  <span class="cf">if</span> (<span class="fu">resp_status</span>(resp) <span class="sc">!=</span> <span class="dv">200</span>){</span>
+<span id="cb7-13"><a></a>    <span class="fu">message</span>(<span class="st">"The request was not successful"</span>)</span>
+<span id="cb7-14"><a></a>  }</span>
+<span id="cb7-15"><a></a>  <span class="cf">else</span>{</span>
+<span id="cb7-16"><a></a>    <span class="fu">return</span>(<span class="fu">resp_body_json</span>(resp))</span>
+<span id="cb7-17"><a></a>  }</span>
+<span id="cb7-18"><a></a>}</span>
+<span id="cb7-19"><a></a></span>
+<span id="cb7-20"><a></a><span class="fu">get_latest_rate</span>(<span class="st">"EUR"</span>, <span class="st">"CHF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="tabset-4-2">
 <div class="cell">
@@ -903,23 +889,22 @@ $base
 [1] "EUR"
 
 $date
-[1] "2026-10-09"
+[1] "2026-10-19"
 
 $rates
 $rates$CHF
-[1] 0.9313</code></pre>
+[1] 0.9261</code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="exercise-description" class="slide level2 smaller">
-<h2>Exercise Description</h2>
+<section id="how-many-swiss-francs-did-one-euro-cost-on-31-december-2025" class="slide level2 smaller">
+<h2>How many Swiss francs did one euro cost on 31 December 2025?</h2>
 <ul>
-<li>use the API documentation: <a href="https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json">https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json</a></li>
+<li>API documentation: <a href="https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json">https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json</a></li>
 <li>use the template to write a function <strong>to get the exchange rate on a past date</strong></li>
-<li><strong>How many Swiss francs did one euro cost on 31 December 2025?</strong></li>
 </ul>
 <div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">library</span>(httr2)</span>
 <span id="cb9-2"><a></a></span>
@@ -941,7 +926,7 @@ $rates$CHF
 <span id="cb9-18"><a></a>  }</span>
 <span id="cb9-19"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>copy this template at: <a href="https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description">https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description</a> <!-- TODO: add the specific slide here  --></li>
+<li>copy this template at: <a href="https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description">https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description</a></li>
 </ul>
 </section></section>
 <section>
@@ -1025,16 +1010,15 @@ $rates$CHF
 <h2>Other examples of APIs &amp; API wrappers for economic data</h2>
 <ul>
 <li>the <a href="https://github.com/opentsi/opentimeseries">opentimeseries</a> R Package (for versioned, open time series)</li>
-<li>the <a href="https://www.rdocumentation.org/packages/kofdata/versions/0.2.1">kofdata</a> R Package (for KOF data)</li>
+<li>the <a href="https://www.tidy-finance.org/">tidyfinance</a> API Wrappers</li>
 <li>the <a href="https://felixluginbuhl.com/BFS/">BFS</a> R package (for Swiss federal statistics)</li>
 <li>the <a href="https://pypi.org/project/fredapi/">fredapi</a> Python Library (for US economic data)</li>
 <li>the <a href="https://sboysel.github.io/fredr/">fredr</a> data from the Federal Reserve Economic Data (FRED) API R package</li>
-<li><a href="https://github.com/public-apis/public-apis">public-apis</a> a Github repository listing Public APIs</li>
+<li><a href="https://data360.worldbank.org/en/api">worldbank</a> Worldbank’s Data360 API</li>
 </ul>
 </section>
-<section id="thank-you-for-your-attention" class="slide level2 smaller">
-<h2>Thank you for your attention!</h2>
-<p>If you are interested in working with us or if you have any questions:</p>
+<section id="ask-me-anything" class="slide level2 smaller">
+<h2>Ask me anything!</h2>
 <ul>
 <li>source code: <a href="https://github.com/minnaheim/dh_guest_lecture_2026">https://github.com/minnaheim/dh_guest_lecture_2026</a></li>
 <li>slides: <a href="https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html">https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html/</a></li>
