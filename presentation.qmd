@@ -48,12 +48,12 @@ plot
 
 - I took this course 5 years ago!
 - Doing a Master in Data Science & minor in Economics at UZH
-- Worked at KOF-ETH
+- Worked at KOF-ETH & built Opentsi
 
 <!-- TODO: disclaimer, views are mine, not SNBs -->
 <!-- Speaker Notes: I used to work in the institute that produces the data i just showed you -->
 
-## About the institute and its work
+<!-- ## About the institute and its work
 
 :::: {.columns}
 ::: {.column width="40%"}
@@ -67,14 +67,14 @@ plot
 - software, infrastructure and data publications with economic use cases.
 - teaching PhD students to work with data & open source ecosystem. 
 :::
-:::: 
+::::  -->
 
-## One of my projects: Opentsi
+## About Opentsi
 <!-- TODO: reveal here? -->
+- See [opentsi.github.io](https://opentsi.github.io/)
 - vintages made public for research purposes, automatically maintained 
 - plenty of API usage (for economic purposes) 
-- so perfect for this lecture 
-- will be used in this lecture...
+
 
 ## What will you know by the end of this lecture?
 - gain a better understanding of how APIs are used
@@ -102,7 +102,7 @@ Brainstorming session: what kind of variables could be relevant for our economic
 
 ## 
 ![](img/download.png){fig-align="center"}
-
+<!-- TODO: better quality for the excel -->
 ## 
 ![](img/excel-trsm.png){fig-align="center"}
 <!-- Speaker Notes: it looks like this (wide format) because its nice to look at & humanly readable
@@ -423,10 +423,6 @@ show: the endpoints, open /latest, click "Try it out" (fields are locked before)
 
 - API: [https://api.frankfurter.dev/v1](https://api.frankfurter.dev/v1/latest)
 - documentation: [https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json](https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json)
-- to try out an endpoint in the documentation:
-  1. open the endpoint and click **Try it out**
-  2. for `symbols`, click **Add item** and enter `CHF`
-  3. click **Execute**
 
 
 ## GET the latest Exchange Rate {.smaller}
@@ -440,10 +436,6 @@ library(httr2)
 get_latest_rate <- function(base = "EUR", symbols = "CHF"){
   base_url <- "https://api.frankfurter.dev/v1/latest"
   final_url <- paste0(base_url, "?base=", base, "&symbols=", symbols)
-
-  # alternative - using magrittr pipe
-  # req <- request(base_url) %>%
-  #   req_url_query(base = base, symbols = symbols)
 
   # perform API call with httr2
   req <- request(final_url) 
@@ -487,10 +479,9 @@ get_latest_rate("EUR", "CHF")
 :::
 
 
-## Exercise Description {.smaller}
-- use the API documentation: [https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json](https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json)
+## How many Swiss francs did one euro cost on 31 December 2025? {.smaller}
+- API documentation: [https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json](https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json)
 - use the template to write a function **to get the exchange rate on a past date**
-- **How many Swiss francs did one euro cost on 31 December 2025?**
 
 ```r
 library(httr2)
@@ -514,7 +505,6 @@ get_rate_on <- function(date, base = "EUR", symbols = "CHF"){
 }
 ```
 - copy this template at: [https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description](https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description)
-<!-- TODO: add the specific slide here  -->
 
 # Sample Solution
 
@@ -605,17 +595,15 @@ get_rate_on("2025-12-31")
 ## Other examples of APIs & API wrappers for economic data {.smaller}
 
 - the [opentimeseries](https://github.com/opentsi/opentimeseries) R Package (for versioned, open time series)
-- the [kofdata](https://www.rdocumentation.org/packages/kofdata/versions/0.2.1) R Package (for KOF data)
+- the [tidyfinance](https://www.tidy-finance.org/) API Wrappers 
 - the [BFS](https://felixluginbuhl.com/BFS/) R package (for Swiss federal statistics)
 - the [fredapi](https://pypi.org/project/fredapi/) Python Library (for US economic data)
 - the [fredr](https://sboysel.github.io/fredr/) data from the Federal Reserve Economic Data (FRED) API R package
-- [public-apis](https://github.com/public-apis/public-apis) a Github repository listing Public APIs
+- [worldbank](https://data360.worldbank.org/en/api) Worldbank's Data360 API
 
 
-## Thank you for your attention! {.smaller}
-If you are interested in working with us or if you have any questions: 
+## Ask me anything!  {.smaller}
 
 - source code: [https://github.com/minnaheim/dh_guest_lecture_2026](https://github.com/minnaheim/dh_guest_lecture_2026)
 - slides: [https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html/](https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html)
 - contact me: [minnaemiliahagen.heim@uzh.ch](mailto:minnaemiliahagen.heim@uzh.ch)
-

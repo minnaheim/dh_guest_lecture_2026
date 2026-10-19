@@ -1,9 +1,13 @@
 library(plumber)
 
 ###### ------ prep start 
-library(kofdata)
-list_available_collections()
-data <- get_time_series("kofbarometer", show_progress = TRUE)
+library(opentimeseries)
+baro <- read_open_ts(
+  series = "idx",
+  remote_archive = "opentsi/ch.kof.barometer"
+)
+baro_start <- as.integer(format(min(baro$date), c("%Y", "%m")))
+data <- list(kofbarometer = ts(baro$value, start = baro_start, frequency = 12))
 # str(data$kofbarometer)
 partition_ts <- function(ts, start = NULL, end = NULL){
   if(inherits(ts, "ts")){

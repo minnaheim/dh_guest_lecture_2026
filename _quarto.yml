@@ -7,7 +7,7 @@ project:
 
 website:
   page-navigation: true
-  title: "Guest Lecture Slides 2025"
+  title: "Guest Lecture Slides 2026"
   site-url: "https://minnaheim.github.io/dh_guest_lecture_2026/"
   repo-url: https://github.com/minnaheim/dh_guest_lecture_2026
   repo-actions: [edit, issue]
