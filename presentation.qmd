@@ -205,7 +205,7 @@ Putting the rest of the request together ->
 - which service -> endpoint (all data, specific data, all users, etc. -> usually last word is a verb or a plural noun)
 - how (is the data represented)? -> params 
  -->
-![](/img/api_conceptual_3.png){fig-align="center"}
+![](/img/api_conceptual_3_1.png){fig-align="center"}
 
 
 ##
@@ -215,7 +215,7 @@ Speaker Notes:
 Important here is when looking at parameters, we need to differentiate between path param & query params - both used, you see them now so you don't get confused later 
 - which API uses what is design preferences although there are cases where one is better than another (i.e. getting time series based on start & end params -> query param)
  -->
-![](/img/api_conceptual_4.png){fig-align="center"}
+![](/img/api_conceptual_4_1.png){fig-align="center"}
 
 ## 
 <!-- 
@@ -224,11 +224,11 @@ So, final request is sent to the server - we get a response
 
 response consists of status (e.g. success) and response body 
  -->
-![](/img/api_conceptual_5.png){fig-align="center"}
+![](/img/api_conceptual_5_1.png){fig-align="center"}
 
 
 ##
-<img src="/img/api_url.png"  style="display:block; margin:0 auto; width:80%;">
+<img src="/img/api_url_2.png"  style="display:block; margin:0 auto; width:100%;">
 <!-- 
 Speaker Notes: 
 when explaining this, encourage students to try out the link themselves -> how many IDs do we get when we use "poodle"
@@ -242,7 +242,7 @@ API wrappers: simple program wraps the process of using the interface through dy
 this is the most frequent way which you will encounter APIs, wrapped 
  -->
 
-![](/img/api_wrapper.png){fig-align="center"}
+![](/img/api_wrapper_2.png){fig-align="center"}
 
 
 ## opentsi API Wrapper for R {.smaller}
