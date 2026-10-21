@@ -481,7 +481,6 @@ get_latest_rate("EUR", "CHF")
 
 ## How many Swiss francs did one euro cost on 31 December 2025? {.smaller}
 - API documentation: [https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json](https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json)
-- use the template to write a function **to get the exchange rate on a past date**
 
 ```r
 library(httr2)
@@ -597,7 +596,7 @@ get_rate_on("2025-12-31")
 - the [opentimeseries](https://github.com/opentsi/opentimeseries) R Package (for versioned, open time series)
 - the [tidyfinance](https://www.tidy-finance.org/) API Wrappers 
 - the [BFS](https://felixluginbuhl.com/BFS/) R package (for Swiss federal statistics)
-- the [fredapi](https://pypi.org/project/fredapi/) Python Library (for US economic data)
+- the [tidyquant](https://business-science.github.io/tidyquant/) R package for tidyverse finance data
 - the [fredr](https://sboysel.github.io/fredr/) data from the Federal Reserve Economic Data (FRED) API R package
 - [worldbank](https://data360.worldbank.org/en/api) Worldbank's Data360 API
 
