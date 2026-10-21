@@ -102,7 +102,7 @@
     "href": "presentation.html#how-many-swiss-francs-did-one-euro-cost-on-31-december-2025",
     "title": "APIs for Economic Data",
     "section": "How many Swiss francs did one euro cost on 31 December 2025?",
-    "text": "How many Swiss francs did one euro cost on 31 December 2025?\n\nAPI documentation: https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json\nuse the template to write a function to get the exchange rate on a past date\n\nlibrary(httr2)\n\nget_rate_on &lt;- function(date, base = \"EUR\", symbols = \"CHF\"){\n\n  base_url &lt;- \"...\"\n  final_url &lt;- \"...\"\n\n  # perform  API call with httr2\n  req &lt;- \"...\"(final_url) \n  resp &lt;- \"...\"(req)\n\n  # if request is not successful\n  if (resp_status(resp) != 200){\n    message(\"The request was not successful\")\n  }\n  else{\n    return(resp_body_json(resp))\n  }\n}\n\ncopy this template at: https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description"
+    "text": "How many Swiss francs did one euro cost on 31 December 2025?\n\nAPI documentation: https://petstore.swagger.io/?url=https://api.frankfurter.dev/v1/openapi.json\n\nlibrary(httr2)\n\nget_rate_on &lt;- function(date, base = \"EUR\", symbols = \"CHF\"){\n\n  base_url &lt;- \"...\"\n  final_url &lt;- \"...\"\n\n  # perform  API call with httr2\n  req &lt;- \"...\"(final_url) \n  resp &lt;- \"...\"(req)\n\n  # if request is not successful\n  if (resp_status(resp) != 200){\n    message(\"The request was not successful\")\n  }\n  else{\n    return(resp_body_json(resp))\n  }\n}\n\ncopy this template at: https://minnaheim.github.io/dh_guest_lecture_2026/presentation.html#/exercise-description"
   },
   {
     "objectID": "presentation.html#get-the-exchange-rate-on-a-past-date",
@@ -116,7 +116,7 @@
     "href": "presentation.html#other-examples-of-apis-api-wrappers-for-economic-data",
     "title": "APIs for Economic Data",
     "section": "Other examples of APIs & API wrappers for economic data",
-    "text": "Other examples of APIs & API wrappers for economic data\n\nthe opentimeseries R Package (for versioned, open time series)\nthe tidyfinance API Wrappers\nthe BFS R package (for Swiss federal statistics)\nthe fredapi Python Library (for US economic data)\nthe fredr data from the Federal Reserve Economic Data (FRED) API R package\nworldbank Worldbank’s Data360 API"
+    "text": "Other examples of APIs & API wrappers for economic data\n\nthe opentimeseries R Package (for versioned, open time series)\nthe tidyfinance API Wrappers\nthe BFS R package (for Swiss federal statistics)\nthe tidyquant R package for tidyverse finance data\nthe fredr data from the Federal Reserve Economic Data (FRED) API R package\nworldbank Worldbank’s Data360 API"
   },
   {
     "objectID": "presentation.html#ask-me-anything",
