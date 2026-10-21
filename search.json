@@ -95,7 +95,7 @@
     "href": "presentation.html#get-the-latest-exchange-rate",
     "title": "APIs for Economic Data",
     "section": "GET the latest Exchange Rate",
-    "text": "GET the latest Exchange Rate\n\nCodeData\n\n\nlibrary(httr2)\n# library(magrittr)\nget_latest_rate &lt;- function(base = \"EUR\", symbols = \"CHF\"){\n  base_url &lt;- \"https://api.frankfurter.dev/v1/latest\"\n  final_url &lt;- paste0(base_url, \"?base=\", base, \"&symbols=\", symbols)\n\n  # perform API call with httr2\n  req &lt;- request(final_url) \n  resp &lt;- req_perform(req)\n\n  # if request is not successful\n  if (resp_status(resp) != 200){\n    message(\"The request was not successful\")\n  }\n  else{\n    return(resp_body_json(resp))\n  }\n}\n\nget_latest_rate(\"EUR\", \"CHF\")\n\n\n\n\n$amount\n[1] 1\n\n$base\n[1] \"EUR\"\n\n$date\n[1] \"2026-10-19\"\n\n$rates\n$rates$CHF\n[1] 0.9261"
+    "text": "GET the latest Exchange Rate\n\nCodeData\n\n\nlibrary(httr2)\n# library(magrittr)\nget_latest_rate &lt;- function(base = \"EUR\", symbols = \"CHF\"){\n  base_url &lt;- \"https://api.frankfurter.dev/v1/latest\"\n  final_url &lt;- paste0(base_url, \"?base=\", base, \"&symbols=\", symbols)\n\n  # perform API call with httr2\n  req &lt;- request(final_url) \n  resp &lt;- req_perform(req)\n\n  # if request is not successful\n  if (resp_status(resp) != 200){\n    message(\"The request was not successful\")\n  }\n  else{\n    return(resp_body_json(resp))\n  }\n}\n\nget_latest_rate(\"EUR\", \"CHF\")\n\n\n\n\n$amount\n[1] 1\n\n$base\n[1] \"EUR\"\n\n$date\n[1] \"2026-10-21\"\n\n$rates\n$rates$CHF\n[1] 0.9256"
   },
   {
     "objectID": "presentation.html#how-many-swiss-francs-did-one-euro-cost-on-31-december-2025",
