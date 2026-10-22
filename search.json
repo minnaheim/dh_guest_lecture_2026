@@ -11,7 +11,7 @@
     "href": "presentation.html#about-me",
     "title": "APIs for Economic Data",
     "section": "About me",
-    "text": "About me\n\nI took this course 5 years ago!\nDoing a Master in Data Science & minor in Economics at UZH\nWorked at KOF-ETH & built Opentsi"
+    "text": "About me\n\nI took this course 5 years ago!\nDoing a Master in Data Science & minor in Economics at UZH\nWorked at KOF-ETH"
   },
   {
     "objectID": "presentation.html#about-opentsi",
@@ -32,7 +32,7 @@
     "href": "presentation.html#import-clean-data",
     "title": "APIs for Economic Data",
     "section": "Import & Clean Data",
-    "text": "Import & Clean Data\n\n\nCodeData\n\n\nlibrary(readxl)\nlibrary(tidyr)\n\ntrsm &lt;- read_xlsx(\"examples/kof_ch.kof.trsm.fcst.year_ts_2026-10-10_17_41_56.xlsx\") \n\n# subset only the column that includes the series we want\ntotal &lt;- trsm[, c(\"date\", \"ch.kof.trsm.fcst.ty.l.all.ch.lg\")]\nnames(total) &lt;- c(\"Date\", \"Overnight_Stays\") # rename cols\n\n# convert overnight stays to num and date to date\ntotal$Overnight_Stays &lt;- as.numeric(total$Overnight_Stays)\ntotal$Date &lt;- as.Date(total$Date)\n\nhead(total, n = 10)\n\n\n\n\n\n# A tibble: 10 × 2\n   Date       Overnight_Stays\n   &lt;date&gt;               &lt;dbl&gt;\n 1 2006-01-01          34473.\n 2 2007-01-01          35900.\n 3 2008-01-01          37335.\n 4 2009-01-01          35529.\n 5 2010-01-01          36124.\n 6 2011-01-01          35591.\n 7 2012-01-01          34616.\n 8 2013-01-01          35494.\n 9 2014-01-01          35816.\n10 2015-01-01          35776."
+    "text": "Import & Clean Data\n\n\nCodeData\n\n\nlibrary(tidyverse)\nlibrary(readxl)\n\ntrsm &lt;- read_xlsx(\"examples/kof_ch.kof.trsm.fcst.year_ts_2026-10-10_17_41_56.xlsx\") \n\n# subset only the column that includes the series we want\ntotal &lt;- trsm |&gt; select(\"date\", \"ch.kof.trsm.fcst.ty.l.all.ch.lg\")\nnames(total) &lt;- c(\"Date\", \"Overnight_Stays\") # rename cols\n\n# convert overnight stays to num and date to date\ntotal$Overnight_Stays &lt;- as.numeric(total$Overnight_Stays)\ntotal$Date &lt;- as.Date(total$Date)\n\nhead(total, n = 10)\n\n\n\n\n\n# A tibble: 10 × 2\n   Date       Overnight_Stays\n   &lt;date&gt;               &lt;dbl&gt;\n 1 2006-01-01          34473.\n 2 2007-01-01          35900.\n 3 2008-01-01          37335.\n 4 2009-01-01          35529.\n 5 2010-01-01          36124.\n 6 2011-01-01          35591.\n 7 2012-01-01          34616.\n 8 2013-01-01          35494.\n 9 2014-01-01          35816.\n10 2015-01-01          35776."
   },
   {
     "objectID": "presentation.html#api-wrappers",

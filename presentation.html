@@ -419,7 +419,7 @@ Let's pretend, we want to reconstruct our own economic index  -->
 <ul>
 <li>I took this course 5 years ago!</li>
 <li>Doing a Master in Data Science &amp; minor in Economics at UZH</li>
-<li>Worked at KOF-ETH &amp; built Opentsi</li>
+<li>Worked at KOF-ETH</li>
 </ul>
 <!-- TODO: disclaimer, views are mine, not SNBs -->
 <!-- Speaker Notes: I used to work in the institute that produces the data i just showed you -->
@@ -506,13 +506,13 @@ now that we have downloaded the data, we need to import and clean it, so we can 
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Code</a></li><li><a href="#tabset-1-2">Data</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1">
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(readxl)</span>
-<span id="cb1-2"><a></a><span class="fu">library</span>(tidyr)</span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(readxl)</span>
 <span id="cb1-3"><a></a></span>
 <span id="cb1-4"><a></a>trsm <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="st">"examples/kof_ch.kof.trsm.fcst.year_ts_2026-10-10_17_41_56.xlsx"</span>) </span>
 <span id="cb1-5"><a></a></span>
 <span id="cb1-6"><a></a><span class="co"># subset only the column that includes the series we want</span></span>
-<span id="cb1-7"><a></a>total <span class="ot">&lt;-</span> trsm[, <span class="fu">c</span>(<span class="st">"date"</span>, <span class="st">"ch.kof.trsm.fcst.ty.l.all.ch.lg"</span>)]</span>
+<span id="cb1-7"><a></a>total <span class="ot">&lt;-</span> trsm <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="st">"date"</span>, <span class="st">"ch.kof.trsm.fcst.ty.l.all.ch.lg"</span>)</span>
 <span id="cb1-8"><a></a><span class="fu">names</span>(total) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Date"</span>, <span class="st">"Overnight_Stays"</span>) <span class="co"># rename cols</span></span>
 <span id="cb1-9"><a></a></span>
 <span id="cb1-10"><a></a><span class="co"># convert overnight stays to num and date to date</span></span>
