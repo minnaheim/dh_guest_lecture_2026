@@ -48,7 +48,7 @@ plot
 
 - I took this course 5 years ago!
 - Doing a Master in Data Science & minor in Economics at UZH
-- Worked at KOF-ETH & built Opentsi
+- Worked at KOF-ETH
 
 <!-- TODO: disclaimer, views are mine, not SNBs -->
 <!-- Speaker Notes: I used to work in the institute that produces the data i just showed you -->
@@ -101,8 +101,10 @@ Brainstorming session: what kind of variables could be relevant for our economic
 ![](img/kof-website.png){fig-align="center"}
 
 ## 
-![](img/download.png){fig-align="center"}
+<!-- ![](img/download_2.png){fig-align="center"} -->
+<img src="img/download_2.png"  style="display:block; margin:0 auto; width:80%;"> 
 <!-- TODO: better quality for the excel -->
+
 ## 
 ![](img/excel-trsm.png){fig-align="center"}
 <!-- Speaker Notes: it looks like this (wide format) because its nice to look at & humanly readable
@@ -121,13 +123,13 @@ now that we have downloaded the data, we need to import and clean it, so we can 
 
 ### Code {.smaller}
 ```r 
+library(tidyverse)
 library(readxl)
-library(tidyr)
 
 trsm <- read_xlsx("examples/kof_ch.kof.trsm.fcst.year_ts_2026-10-10_17_41_56.xlsx") 
 
 # subset only the column that includes the series we want
-total <- trsm[, c("date", "ch.kof.trsm.fcst.ty.l.all.ch.lg")]
+total <- trsm |> select("date", "ch.kof.trsm.fcst.ty.l.all.ch.lg")
 names(total) <- c("Date", "Overnight_Stays") # rename cols
 
 # convert overnight stays to num and date to date
@@ -148,13 +150,13 @@ long: values are vertically oriented
 
  -->
 ```{r import data}
+library(tidyverse)
 library(readxl)
-library(tidyr)
 
 trsm <- read_xlsx("examples/kof_ch.kof.trsm.fcst.year_ts_2026-10-10_17_41_56.xlsx")
 
 # subset only the column that includes the series we want
-total <- trsm[, c("date", "ch.kof.trsm.fcst.ty.l.all.ch.lg")]
+total <- trsm |> select("date", "ch.kof.trsm.fcst.ty.l.all.ch.lg")
 names(total) <- c("Date", "Overnight_Stays") # rename cols
 
 # convert overnight stays to num and date to date
